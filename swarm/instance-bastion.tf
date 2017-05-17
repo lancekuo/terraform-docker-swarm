@@ -10,10 +10,10 @@ resource "aws_instance" "swarm-bastion" {
     }
 
     instance_type          = "t2.small"
-    ami                    = "ami-b3d965d7"
+    ami                    = "${var.aws_ami}"
     key_name               = "${aws_key_pair.swarm-bastion.id}"
-    vpc_security_group_ids = ["${aws_security_group.web.id}"]
-    subnet_id              = "${aws_subnet.public1.id}"
+    vpc_security_group_ids = ["${aws_security_group.swarm-bastion.id}"]
+    subnet_id              = "${var.subnet_public1_id}"
 
     provisioner "remote-exec" {
         inline = [
@@ -30,9 +30,7 @@ resource "aws_instance" "swarm-bastion" {
         ]
     }
     tags  {
-        Name              = "${terraform.env}-swarm-bastion"
-        Env               = "${terraform.env}"
-        Roles             = "bastion"
-        Deployment-source = "${var.terrorform-version}"
+        Name = "${terraform.env}-swarm-bastion"
+        Env  = "${terraform.env}"
     }
 }

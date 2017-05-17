@@ -13,7 +13,5 @@ resource "aws_elb" "web" {
     }
     tags  {
         Env = "${terraform.env}"
-        Roles = "elb"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
