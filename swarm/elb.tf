@@ -1,7 +1,7 @@
 resource "aws_elb" "grafana" {
     name = "${terraform.env}-grafana"
 
-    subnets         = ["${aws_subnet.public-app1.id}", "${aws_subnet.public-app2.id}"]
+    subnets         = ["${var.subnet_public_app1_id}", "${var.subnet_public_app2_id}"]
     security_groups = ["${aws_security_group.grafana-elb.id}"]
 
     listener {
@@ -12,7 +12,5 @@ resource "aws_elb" "grafana" {
     }
     tags  {
         Env = "${terraform.env}"
-        Roles = "elb"
-        Deployment-source = "${var.terrorform-version}"
     }
 }

@@ -5,8 +5,6 @@ resource "aws_vpc" "default" {
     tags  {
         Name              = "${terraform.env}-${var.project-name}"
         Env               = "${terraform.env}"
-        Roles             = "vpc"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 
@@ -15,8 +13,6 @@ resource "aws_internet_gateway" "default" {
     tags {
         Name              = "${terraform.env}-internet-gateway"
         Env               = "${terraform.env}"
-        Roles             = "internet-gateway"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 
@@ -39,8 +35,6 @@ resource "aws_default_route_table" "public" {
     tags {
         Name              = "public-route"
         Env               = "${terraform.env}"
-        Roles             = "Router-table"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 
@@ -53,8 +47,6 @@ resource "aws_route_table" "private" {
     tags {
         Name              = "private-route"
         Env               = "${terraform.env}"
-        Roles             = "Router-table"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 
@@ -91,9 +83,6 @@ resource "aws_subnet" "public1" {
     tags  {
         Name              = "Public-1"
         Env               = "${terraform.env}"
-        Roles             = "subnet"
-        Deployment-source = "${var.terrorform-version}"
-        Availability-zone = "${var.region}a"
     }
     tags {
     }
@@ -106,9 +95,6 @@ resource "aws_subnet" "public-app1" {
     tags {
         Name              = "Public-app-1"
         Env               = "${terraform.env}"
-        Roles             = "subnet"
-        Deployment-source = "${var.terrorform-version}"
-        Availability-zone = "${var.region}a"
     }
 }
 resource "aws_subnet" "public-app2" {
@@ -119,9 +105,6 @@ resource "aws_subnet" "public-app2" {
     tags {
         Name              = "Public-app-2"
         Env               = "${terraform.env}"
-        Roles             = "subnet"
-        Deployment-source = "${var.terrorform-version}"
-        Availability-zone = "${var.region}a"
     }
 }
 
@@ -132,9 +115,6 @@ resource "aws_subnet" "private1" {
     tags {
         Name              = "Private-1"
         Env               = "${terraform.env}"
-        Roles             = "subnet"
-        Deployment-source = "${var.terrorform-version}"
-        Availability-zone = "${var.region}a"
     }
 }
 resource "aws_subnet" "private2" {
@@ -144,8 +124,5 @@ resource "aws_subnet" "private2" {
     tags {
         Name              = "Private-2"
         Env               = "${terraform.env}"
-        Roles             = "subnet"
-        Deployment-source = "${var.terrorform-version}"
-        Availability-zone = "${var.region}a"
     }
 }
