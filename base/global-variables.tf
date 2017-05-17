@@ -39,3 +39,14 @@ variable "subnets" {
         private_2.prd = "10.10.51.0/24"
     }
 }
+variable "aws_amis" {
+    default = {
+        "eu-west-1"    = "ami-a8d2d7ce",
+        "eu-west-2"    = "ami-f1d7c395",
+        "us-east-1"    = "ami-80861296",
+        "us-east-2"    = "ami-618fab04",
+        "us-west-1"    = "ami-2afbde4a",
+        "us-west-2"    = "ami-efd0428f",
+        "ca-central-1" = "ami-b3d965d7"
+    }
+}
