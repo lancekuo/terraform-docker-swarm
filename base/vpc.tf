@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "default" {
 
 resource "aws_nat_gateway" "default" {
     allocation_id = "${aws_eip.nat.id}"
-    subnet_id     = "${aws_subnet.public1.id}"
+    subnet_id     = "${aws_subnet.private.0.id}"
     depends_on    = ["aws_internet_gateway.default"]
 }
 
@@ -50,35 +50,11 @@ resource "aws_route_table" "private" {
     }
 }
 
-resource "aws_route_table_association" "public-route-1" {
-    subnet_id      = "${aws_subnet.public1.id}"
-    route_table_id = "${aws_default_route_table.public.id}"
-}
-
-resource "aws_route_table_association" "public-app-route-1" {
-    subnet_id      = "${aws_subnet.public-app1.id}"
-    route_table_id = "${aws_default_route_table.public.id}"
-}
-
-resource "aws_route_table_association" "public-app-route-2" {
-    subnet_id      = "${aws_subnet.public-app2.id}"
-    route_table_id = "${aws_default_route_table.public.id}"
-}
-
-resource "aws_route_table_association" "private-route-1" {
-    subnet_id      = "${aws_subnet.private1.id}"
-    route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_route_table_association" "private-route-2" {
-    subnet_id      = "${aws_subnet.private2.id}"
-    route_table_id = "${aws_route_table.private.id}"
-}
-
-resource "aws_subnet" "public1" {
+resource "aws_subnet" "public" {
+    count                   = "${var.subnet-on-public}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "public_1.${terraform.env}")}"
-    availability_zone       = "${var.region}a"
+    cidr_block              = "${lookup(var.subnets, "public_${count.index+1}.${terraform.env}")}"
+    availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags  {
         Name              = "Public-1"
@@ -87,42 +63,44 @@ resource "aws_subnet" "public1" {
     tags {
     }
 }
-resource "aws_subnet" "public-app1" {
+resource "aws_subnet" "public-app" {
+    count                   = "${var.subnet-per-zone}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "app_1.${terraform.env}")}"
-    availability_zone       = "${var.region}a"
+    cidr_block              = "${lookup(var.subnets, "app_${count.index+1}.${terraform.env}")}"
+    availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags {
-        Name              = "Public-app-1"
-        Env               = "${terraform.env}"
-    }
-}
-resource "aws_subnet" "public-app2" {
-    vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "app_2.${terraform.env}")}"
-    availability_zone       = "${var.region}b"
-    map_public_ip_on_launch = true
-    tags {
-        Name              = "Public-app-2"
+        Name              = "Public-app${count.index}"
         Env               = "${terraform.env}"
     }
 }
 
-resource "aws_subnet" "private1" {
+resource "aws_subnet" "private" {
+    count                   = "${var.subnet-per-zone}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "private_1.${terraform.env}")}"
-    availability_zone       = "${var.region}a"
+    cidr_block              = "${lookup(var.subnets, "private_${count.index+1}.${terraform.env}")}"
+    availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
+    map_public_ip_on_launch = true
     tags {
-        Name              = "Private-1"
+        Name              = "Private${count.index}"
         Env               = "${terraform.env}"
     }
 }
-resource "aws_subnet" "private2" {
-    vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "private_2.${terraform.env}")}"
-    availability_zone       = "${var.region}b"
-    tags {
-        Name              = "Private-2"
-        Env               = "${terraform.env}"
-    }
+
+resource "aws_route_table_association" "public-route" {
+    count = "${var.subnet-on-public}"
+    subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
+    route_table_id = "${aws_default_route_table.public.id}"
+}
+
+resource "aws_route_table_association" "public-app-route" {
+    count = "${var.subnet-per-zone}"
+    subnet_id      = "${element(aws_subnet.public-app.*.id, count.index)}"
+    route_table_id = "${aws_default_route_table.public.id}"
+}
+
+resource "aws_route_table_association" "private-route" {
+    count = "${var.subnet-per-zone}"
+    subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
+    route_table_id = "${aws_route_table.private.id}"
 }

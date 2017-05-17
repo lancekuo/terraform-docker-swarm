@@ -1,4 +1,3 @@
-
 variable "swarm-bastion" {
     default = {
         "public_key_path" = "~/.ssh/id_rsa.pub"
@@ -6,14 +5,15 @@ variable "swarm-bastion" {
         "key_name" = "-swarm-bastion"
     }
 }
-variable "subnet_public1_id" {}
-variable "subnet_public_app1_id" {}
-variable "subnet_public_app2_id" {}
-variable "subnet_private1_id" {}
-variable "subnet_private2_id" {}
+variable "subnet_public" {}
+variable "subnet_public_app" {}
+variable "subnet_private" {}
+variable "subnet_on_public" {}
+variable "subnet_per_zone" {}
+variable "instance_per_subnet" {}
 variable "subnets" {}
 variable "region" {}
-variable "aws_ami" {}
+variable "ami" {}
 variable "project_name" {}
 
 provider "aws" {

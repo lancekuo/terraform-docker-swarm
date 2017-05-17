@@ -7,3 +7,12 @@ variable "project-name" {
 provider "aws" {
     region = "${var.region}"
 }
+variable "subnet-on-public" {
+    default = 1
+}
+variable "subnet-per-zone" {
+    default = 2
+}
+variable "instance-per-subnet" {
+    default = 1
+}

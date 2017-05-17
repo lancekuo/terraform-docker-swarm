@@ -1,9 +1,5 @@
-resource "aws_key_pair" "swarm-bastion" {
-    key_name   = "${terraform.env}-${var.region}${var.swarm-bastion["key_name"]}"
-    public_key = "${file(var.swarm-bastion["public_key_path"])}"
-}
-resource "aws_instance" "swarm-bastion" {
-    instance_type          = "t2.nano"
+resource "aws_instance" "swarm-node" {
+    instance_type          = "t2.small"
     ami                    = "${var.ami}"
     key_name               = "${aws_key_pair.swarm-bastion.id}"
     vpc_security_group_ids = ["${aws_security_group.swarm-bastion.id}"]
@@ -14,6 +10,7 @@ resource "aws_instance" "swarm-bastion" {
         user        = "ubuntu"
         private_key = "${file(var.swarm-bastion["private_key_path"])}"
     }
+
     provisioner "remote-exec" {
         inline = [
             "sudo apt-get -y update",
@@ -29,7 +26,7 @@ resource "aws_instance" "swarm-bastion" {
         ]
     }
     tags  {
-        Name = "${terraform.env}-swarm-bastion"
+        Name = "${terraform.env}-swarm-node"
         Env  = "${terraform.env}"
     }
 }

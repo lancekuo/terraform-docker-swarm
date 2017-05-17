@@ -50,3 +50,5 @@ variable "aws_amis" {
         "ca-central-1" = "ami-b3d965d7"
     }
 }
+data "aws_availability_zones" "azs" {}
+
