@@ -32,7 +32,5 @@ resource "aws_instance" "swarm-bastion" {
     tags  {
         Name              = "${terraform.env}-swarm-bastion"
         Env               = "${terraform.env}"
-        Roles             = "bastion"
-        Deployment-source = "${var.terrorform-version}"
     }
 }

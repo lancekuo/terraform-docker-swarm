@@ -12,7 +12,5 @@ resource "aws_elb" "grafana" {
     }
     tags  {
         Env = "${terraform.env}"
-        Roles = "elb"
-        Deployment-source = "${var.terrorform-version}"
     }
 }

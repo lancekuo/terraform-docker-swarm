@@ -1,6 +1,3 @@
-variable "terrorform-version" {
-    default = "Terraform v0.9.5"
-}
 variable "subnets" {
     type = "map"
     default = {

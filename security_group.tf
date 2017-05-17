@@ -19,8 +19,6 @@ resource "aws_security_group" "web-elb" {
     tags {
         Name              = "${terraform.env}-web-elb"
         Env               = "${terraform.env}"
-        Roles             = "SG"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 resource "aws_security_group" "web" {
@@ -50,7 +48,5 @@ resource "aws_security_group" "web" {
     tags {
         Name              = "${terraform.env}-web"
         Env               = "${terraform.env}"
-        Roles             = "SG"
-        Deployment-source = "${var.terrorform-version}"
     }
 }

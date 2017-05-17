@@ -18,8 +18,6 @@ resource "aws_security_group" "swarm-master" {
     tags {
         Name              = "${terraform.env}-swarm-master"
         Env               = "${terraform.env}"
-        Roles             = "swarm-master"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 resource "aws_security_group" "swarm-node" {
@@ -85,8 +83,6 @@ resource "aws_security_group" "swarm-node" {
     tags {
         Name              = "${terraform.env}-swarm-node"
         Env               = "${terraform.env}"
-        Roles             = "swarm-node"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 
@@ -111,8 +107,6 @@ resource "aws_security_group" "swarm-bastion" {
     tags {
         Name              = "${terraform.env}-swarm-bastion"
         Env               = "${terraform.env}"
-        Roles             = "bastion"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
 resource "aws_security_group" "grafana-elb" {
@@ -129,7 +123,5 @@ resource "aws_security_group" "grafana-elb" {
     tags {
         Name              = "${terraform.env}-grafana-elb"
         Env               = "${terraform.env}"
-        Roles             = "Grafana"
-        Deployment-source = "${var.terrorform-version}"
     }
 }
