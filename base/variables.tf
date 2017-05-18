@@ -14,5 +14,5 @@ variable "subnet-per-zone" {
     default = 2
 }
 variable "instance-per-subnet" {
-    default = 1
+    default = 2
 }
