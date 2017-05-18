@@ -11,6 +11,8 @@ variable "subnet_private" {}
 variable "subnet_on_public" {}
 variable "subnet_per_zone" {}
 variable "instance_per_subnet" {}
+variable "swarm_master_count" {}
+variable "swarm_node_count" {}
 variable "subnets" {}
 variable "region" {}
 variable "ami" {}

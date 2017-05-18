@@ -33,3 +33,7 @@ resource "aws_instance" "swarm-bastion" {
         Env  = "${terraform.env}"
     }
 }
+resource "aws_eip" "swarm-bastion" {
+    vpc = true
+    instance = "${aws_instance.swarm-bastion.id}"
+}

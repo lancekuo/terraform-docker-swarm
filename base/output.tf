@@ -39,3 +39,9 @@ output "subnet_per_zone" {
 output "instance_per_subnet" {
     value = "${var.instance-per-subnet}"
 }
+output "swarm_master_count" {
+    value = "${var.swarm-master-count}"
+}
+output "swarm_node_count" {
+    value = "${var.swarm-node-count}"
+}

@@ -24,8 +24,13 @@ module "swarm" {
     subnet_on_public    = "${module.vpc.subnet_on_public}"
     subnet_per_zone     = "${module.vpc.subnet_per_zone}"
     instance_per_subnet = "${module.vpc.instance_per_subnet}"
+    swarm_master_count  = "${module.vpc.swarm_master_count}"
+    swarm_node_count    = "${((module.vpc.instance_per_subnet*module.vpc.subnet_per_zone)-module.vpc.swarm_master_count)}"
 }
 
-output "test" {
-    value = "${module.vpc.subnets}"
+output "swarm-node" {
+    value = "${module.swarm.swarm_node}"
+}
+output "swarm-master" {
+    value = "${module.swarm.swarm_master}"
 }

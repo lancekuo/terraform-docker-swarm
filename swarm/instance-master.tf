@@ -1,5 +1,5 @@
-resource "aws_instance" "swarm-node" {
-    count                       = "${var.swarm_node_count}"
+resource "aws_instance" "swarm-master" {
+    count                       = "${var.swarm_master_count}"
     instance_type               = "t2.small"
     ami                         = "${var.ami}"
     key_name                    = "${aws_key_pair.swarm-bastion.id}"
@@ -15,7 +15,7 @@ resource "aws_instance" "swarm-node" {
 
     provisioner "remote-exec" {
         inline = [
-            "until [ -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; echo '========================= Still waiting for CLOUD-INIT finish.'; done",
+            "until [ -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; echo '======================== Still waiting for CLOUD-INIT finish.'; done",
             "sudo apt-get -y install unzip libltdl7",
             "sudo ln -s /usr/bin/python3 /usr/bin/python",
             "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
@@ -23,7 +23,7 @@ resource "aws_instance" "swarm-node" {
         ]
     }
     tags  {
-        Name = "${terraform.env}-swarm-node-${count.index}"
+        Name = "${terraform.env}-swarm-master-${count.index}"
         Env  = "${terraform.env}"
         Role = "swarm-node"
     }

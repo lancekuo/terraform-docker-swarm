@@ -16,3 +16,9 @@ variable "subnet-per-zone" {
 variable "instance-per-subnet" {
     default = 2
 }
+variable "swarm-master-count" {
+    default = 1
+}
+variable "swarm-node-count" {
+    default = 1
+}
