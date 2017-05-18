@@ -7,9 +7,14 @@ resource "aws_instance" "swarm-master" {
     subnet_id                   = "${element(split(",", var.subnet_public_app), count.index)}"
 
     connection {
-        type        = "ssh"
-        user        = "ubuntu"
-        private_key = "${file(var.swarm-bastion["private_key_path"])}"
+        bastion_host        = "${aws_instance.swarm-bastion.public_ip}"
+        bastion_user        = "ubuntu"
+        bastion_private_key = "${file(var.swarm-bastion["private_key_path"])}"
+
+        type                = "ssh"
+        user                = "ubuntu"
+        host                = "${self.private_ip}"
+        private_key         = "${file(var.swarm-bastion["private_key_path"])}"
     }
 
     provisioner "remote-exec" {
