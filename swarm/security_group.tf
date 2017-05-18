@@ -17,6 +17,12 @@ resource "aws_security_group" "swarm-master" {
         protocol        = "tcp"
         security_groups = ["${aws_security_group.swarm-bastion.id}"]
     }
+    ingress {
+        from_port       = 2375
+        to_port         = 2375
+        protocol        = "tcp"
+        security_groups = ["${aws_security_group.swarm-bastion.id}"]
+    }
     tags {
         Name = "${terraform.env}-swarm-master"
         Env  = "${terraform.env}"
@@ -65,6 +71,13 @@ resource "aws_security_group" "swarm-node" {
     ingress {
         from_port       = 2376
         to_port         = 2376
+        protocol        = "tcp"
+        security_groups = ["${aws_security_group.swarm-bastion.id}"]
+    }
+
+    ingress {
+        from_port       = 2375
+        to_port         = 2375
         protocol        = "tcp"
         security_groups = ["${aws_security_group.swarm-bastion.id}"]
     }

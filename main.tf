@@ -15,7 +15,7 @@ module "swarm" {
 
     project_name        = "${module.vpc.project_name}"
     region              = "${module.vpc.region}"
-    ami                 = "${lookup(module.vpc.amis, module.vpc.region)}"
+    ami                 = "ami-fe64d89a"
     subnets             = "${module.vpc.subnets}"
     vpc_default_id      = "${module.vpc.vpc_default_id}"
     subnet_public       = "${module.vpc.subnet_public}"

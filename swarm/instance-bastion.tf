@@ -16,14 +16,10 @@ resource "aws_instance" "swarm-bastion" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sudo apt-get -y update",
-            "sudo apt-get -y install nginx unzip libltdl7",
+            "sudo apt-get -y install nginx",
             "sudo service nginx start",
             "sudo curl -L https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine && chmod +x /tmp/docker-machine && sudo cp /tmp/docker-machine /usr/local/bin/docker-machine",
             "sudo curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
-            "sudo ln -s /usr/bin/python3 /usr/bin/python",
-            "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
-            "curl https://download.docker.com/linux/ubuntu/dists/xenial/pool/edge/amd64/docker-ce_17.05.0~ce-0~ubuntu-xenial_amd64.deb -o package.deb;sudo dpkg -i package.deb",
             "sudo systemctl stop docker",
             "sudo systemctl disable docker",
         ]
