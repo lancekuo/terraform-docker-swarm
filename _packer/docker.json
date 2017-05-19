@@ -1,7 +1,7 @@
 {
   "builders": [
     {
-      "ami_name": "docker-swarm {{timestamp}}",
+      "ami_name": "docker {{timestamp}}",
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
       "instance_type": "t2.small",
@@ -14,14 +14,17 @@
         },
         "most_recent": true
       },
-      "ssh_username": "ubuntu",
-      "subnet_id": "subnet-0337d56a",
       "tags": {
         "OS_Version": "Ubuntu",
-        "Release": "16.10"
+        "Release": "16.10",
+        "Docker_Version": "ce_17.05.0",
+        "AWSCLI_Version": "1.11.89",
+        "Build_Date": "{{isotime \"2006-01-02 03:04:05 -0700\"}}"
       },
       "type": "amazon-ebs",
-      "security_group_ids": ["sg-d94ea7b0"]
+      "security_group_ids": ["sg-d94ea7b0"],
+      "ssh_username": "ubuntu",
+      "subnet_id": "subnet-0337d56a"
     }
   ],
   "post-processors": null,
@@ -40,7 +43,8 @@
         "sudo ln -s /usr/bin/python3 /usr/bin/python",
         "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
         "curl https://download.docker.com/linux/ubuntu/dists/xenial/pool/edge/amd64/docker-ce_17.05.0~ce-0~ubuntu-xenial_amd64.deb -o package.deb;sudo dpkg -i package.deb",
-        "usermod -aG docker ubuntu"
+        "usermod -aG docker ubuntu",
+        "rm -rf awscli-bundle.zip package.deb"
       ],
       "type": "shell"
     }
