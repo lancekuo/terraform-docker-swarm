@@ -17,6 +17,7 @@ variable "subnets" {}
 variable "region" {}
 variable "ami" {}
 variable "project_name" {}
+variable "domain" {}
 
 provider "aws" {
     region = "${var.region}"
