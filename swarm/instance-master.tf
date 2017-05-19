@@ -1,3 +1,12 @@
+data "template_file" "user-data-master" {
+    template = "${file("${path.module}/cloud-init/hostname")}"
+    count = "${var.swarm_master_count}"
+
+    vars {
+        hostname = "${terraform.env}-master-${count.index}"
+        domain   = "${var.domain}"
+    }
+}
 resource "aws_instance" "swarm-master" {
     count                       = "${var.swarm_master_count}"
     instance_type               = "t2.small"
@@ -27,6 +36,7 @@ resource "aws_instance" "swarm-master" {
         Env  = "${terraform.env}"
         Role = "swarm-master"
     }
+    user_data = "${element(data.template_file.user-data-master.*.rendered, count.index)}"
     depends_on = [
         "aws_instance.swarm-bastion"
     ]
