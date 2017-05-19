@@ -7,7 +7,7 @@ resource "aws_instance" "swarm-master" {
     subnet_id                   = "${element(split(",", var.subnet_public_app), count.index)}"
 
     connection {
-        bastion_host        = "${aws_instance.swarm-bastion.public_ip}"
+        bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
         bastion_user        = "ubuntu"
         bastion_private_key = "${file(var.swarm-bastion["private_key_path"])}"
 
