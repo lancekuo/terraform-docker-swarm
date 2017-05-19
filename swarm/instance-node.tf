@@ -4,7 +4,7 @@ resource "aws_instance" "swarm-node" {
     ami                         = "${var.ami}"
     key_name                    = "${aws_key_pair.swarm-bastion.id}"
     vpc_security_group_ids      = ["${aws_security_group.swarm-node.id}"]
-    subnet_id                   = "${element(split(",", var.subnet_public_app), count.index)}"
+    subnet_id                   = "${element(split(",", var.subnet_public_app), (count.index+var.swarm_master_count))}"
 
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
