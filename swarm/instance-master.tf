@@ -25,9 +25,9 @@ resource "aws_instance" "swarm-master" {
     tags  {
         Name = "${terraform.env}-swarm-master-${count.index}"
         Env  = "${terraform.env}"
-        Role = "swarm-node"
+        Role = "swarm-master"
     }
     depends_on = [
-        "aws_instance.swarm-master"
+        "aws_instance.swarm-bastion"
     ]
 }
