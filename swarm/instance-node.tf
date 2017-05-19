@@ -19,7 +19,7 @@ resource "aws_instance" "swarm-node" {
 
     provisioner "remote-exec" {
         inline = [
-            "echo 'All set'"
+            "sudo docker swarm join ${aws_instance.swarm-master.0.private_ip}:2377 --token $(docker -H ${aws_instance.swarm-master.0.private_ip} swarm join-token -q worker)"
         ]
     }
     tags  {

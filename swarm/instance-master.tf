@@ -19,7 +19,7 @@ resource "aws_instance" "swarm-master" {
 
     provisioner "remote-exec" {
         inline = [
-            "echo 'All set'"
+            "sudo docker swarm init"
         ]
     }
     tags  {
