@@ -79,6 +79,13 @@ resource "aws_security_group" "swarm-node" {
         from_port       = 2375
         to_port         = 2375
         protocol        = "tcp"
+        self            = true
+    }
+
+    ingress {
+        from_port       = 2375
+        to_port         = 2375
+        protocol        = "tcp"
         security_groups = ["${aws_security_group.swarm-bastion.id}"]
     }
 
