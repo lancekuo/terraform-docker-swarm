@@ -1,3 +1,4 @@
 terraform.tfstate.d/
 .terraform/modules/
 script/ssh_config_*
+*.swp

@@ -1,6 +1,6 @@
 resource "aws_key_pair" "swarm-bastion" {
-    key_name   = "${terraform.env}-${var.region}${var.swarm-bastion["key_name"]}"
-    public_key = "${file(var.swarm-bastion["public_key_path"])}"
+    key_name   = "${terraform.env}-${var.region}-${var.swarm-bastion["key_name"]}"
+    public_key = "${file("${path.module}${var.swarm-bastion["public_key_path"]}")}"
 }
 resource "aws_instance" "swarm-bastion" {
     instance_type          = "t2.nano"
@@ -12,7 +12,7 @@ resource "aws_instance" "swarm-bastion" {
     connection {
         type        = "ssh"
         user        = "ubuntu"
-        private_key = "${file(var.swarm-bastion["private_key_path"])}"
+        private_key = "${file("${path.module}${var.swarm-bastion["private_key_path"]}")}"
     }
     provisioner "remote-exec" {
         inline = [

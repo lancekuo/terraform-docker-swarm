@@ -1,8 +1,22 @@
 variable "swarm-bastion" {
     default = {
-        "public_key_path" = "~/.ssh/id_rsa.pub"
-        "private_key_path"= "~/.ssh/id_rsa.bk"
-        "key_name" = "-swarm-bastion"
+        "public_key_path" = "/keys/bastion.pub"
+        "private_key_path"= "/keys/bastion.key"
+        "key_name" = "swarm-bastion"
+    }
+}
+variable "swarm-node" {
+    default = {
+        "public_key_path" = "/keys/swarm.pub"
+        "private_key_path"= "/keys/swarm.key"
+        "key_name" = "swarm-node"
+    }
+}
+variable "swarm-master" {
+    default = {
+        "public_key_path" = "/keys/swarm.pub"
+        "private_key_path"= "/keys/swarm.key"
+        "key_name" = "swarm-master"
     }
 }
 variable "subnet_public" {}
