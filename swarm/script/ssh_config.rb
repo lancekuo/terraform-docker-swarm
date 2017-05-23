@@ -51,6 +51,8 @@ bastion = {}
 bastion_name = ""
 eip = ""
 
+pathname = File.expand_path(File.dirname(__FILE__))
+
 data_hash['modules'][1]['resources'].each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
@@ -64,7 +66,7 @@ data_hash['modules'][1]['resources'].each do |key, resource|
     eip = attributes['public_ip']
   end
 end
-bastion_path = File.dirname(__FILE__)+'/keys/bastion'
+bastion_path = pathname+'/keys/bastion'
 bastion[bastion_name] = {
     :hostname => eip,
     :user     => 'ubuntu',
@@ -81,7 +83,7 @@ data_hash['modules'][1]['resources'].each do |key, resource|
     if !name.index('bastion')
 
       user = 'ubuntu'
-      node_path = File.dirname(__FILE__)+'/keys/swarm'
+      node_path = pathname+'/keys/swarm'
       hosts[name] = {
         :hostname => hostname,
         :user => user,
@@ -93,4 +95,4 @@ data_hash['modules'][1]['resources'].each do |key, resource|
 end
 renderer2 = ERB.new(get_template_bastion)
 puts renderer2.result(SshConfig.new(hosts).get_binding)
-File.write(File.dirname(__FILE__)+'/ssh_config_'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))
+File.write(pathname+'/ssh_config_'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))
