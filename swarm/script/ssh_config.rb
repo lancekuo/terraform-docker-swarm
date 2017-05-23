@@ -64,7 +64,7 @@ data_hash['modules'][1]['resources'].each do |key, resource|
     eip = attributes['public_ip']
   end
 end
-bastion_path = Dir.pwd+'/../keys/bastion'
+bastion_path = File.dirname(__FILE__)+'/keys/bastion'
 bastion[bastion_name] = {
     :hostname => eip,
     :user     => 'ubuntu',
@@ -81,7 +81,7 @@ data_hash['modules'][1]['resources'].each do |key, resource|
     if !name.index('bastion')
 
       user = 'ubuntu'
-      node_path = Dir.pwd+'/../keys/swarm'
+      node_path = File.dirname(__FILE__)+'/keys/swarm'
       hosts[name] = {
         :hostname => hostname,
         :user => user,
