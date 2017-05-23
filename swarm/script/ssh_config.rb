@@ -11,6 +11,7 @@ def get_template()
 Host <%= key %>
     User <%= entry[:user] %>
     Hostname <%= entry[:hostname] %>
+    IdentityFile <%= entry[:path] %>
 <% end %>
 }
 end
@@ -22,7 +23,7 @@ Host <%= key %>
     User <%= entry[:user] %>
     Hostname <%= entry[:hostname] %>
     ProxyCommand ssh -A <%= entry[:bastion_name]%> nc %h %p
-    IdentityFile 
+    IdentityFile <%= entry[:path] %>
     ForwardAgent yes
 <% end %>
 }
@@ -40,31 +41,35 @@ class SshConfig
   end
 end
 
-file = File.read('terraform.tfstate')
+system("aws --region ca-central-1 s3 cp s3://terraform.internal/env:/stg/terraform.tfstate "+ File.dirname(__FILE__))
+
+file = File.read(File.dirname(__FILE__)+'/terraform.tfstate')
 data_hash = JSON.parse(file)
 
 hosts = {}
 bastion = {}
 bastion_name = ""
+eip = ""
 
 data_hash['modules'][1]['resources'].each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
     name = attributes['tags.Name']
     if name.index('bastion')
-      hostname = attributes['public_ip']
-
-      user = 'ubuntu'
-
-      bastion[name] = {
-        :hostname => hostname,
-        :user => user,
-      }
       bastion_name = name
     end
   end
+  if ['aws_eip'].include?(resource['type'])
+    attributes = resource['primary']['attributes']
+    eip = attributes['public_ip']
+  end
 end
-
+bastion_path = Dir.pwd+'/../keys/bastion.key'
+bastion[bastion_name] = {
+    :hostname => eip,
+    :user     => 'ubuntu',
+    :path     => bastion_path,
+}
 renderer = ERB.new(get_template)
 puts renderer.result(SshConfig.new(bastion).get_binding)
 
@@ -76,15 +81,16 @@ data_hash['modules'][1]['resources'].each do |key, resource|
     if !name.index('bastion')
 
       user = 'ubuntu'
-
+      node_path = Dir.pwd+'/../keys/node.key'
       hosts[name] = {
         :hostname => hostname,
         :user => user,
         :bastion_name => bastion_name,
+        :path => node_path,
       }
     end
   end
 end
 renderer2 = ERB.new(get_template_bastion)
 puts renderer2.result(SshConfig.new(hosts).get_binding)
-File.write('ssh_config_'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))
+File.write(File.dirname(__FILE__)+'/ssh_config_'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))

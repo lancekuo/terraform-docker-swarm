@@ -1,4 +1,7 @@
 terraform.tfstate.d/
 .terraform/modules/
-script/ssh_config_*
 *.swp
+swarm/keys/*.pub
+swarm/keys/*.key
+swarm/script/terraform.tfstate
+swarm/script/ssh_config_*
