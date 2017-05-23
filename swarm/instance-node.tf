@@ -1,6 +1,6 @@
 resource "aws_key_pair" "swarm-node" {
     key_name   = "${terraform.env}-${var.region}-${var.swarm-node["key_name"]}"
-    public_key = "${file("${path.module}${var.swarm-node["public_key_path"]}")}"
+    public_key = "${file("${path.module}/script/${var.swarm-node["public_key_path"]}")}"
 }
 
 data "template_file" "user-data-node" {
@@ -23,12 +23,12 @@ resource "aws_instance" "swarm-node" {
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
         bastion_user        = "ubuntu"
-        bastion_private_key = "${file("${path.module}${var.swarm-bastion["private_key_path"]}")}"
+        bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
 
         type                = "ssh"
         user                = "ubuntu"
         host                = "${self.private_ip}"
-        private_key         = "${file("${path.module}${var.swarm-node["private_key_path"]}")}"
+        private_key         = "${file("${path.module}/script/${var.swarm-node["private_key_path"]}")}"
     }
 
     provisioner "remote-exec" {
