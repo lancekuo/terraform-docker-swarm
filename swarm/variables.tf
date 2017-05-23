@@ -1,21 +1,21 @@
 variable "swarm-bastion" {
     default = {
         "public_key_path" = "/keys/bastion.pub"
-        "private_key_path"= "/keys/bastion.key"
+        "private_key_path"= "/keys/bastion"
         "key_name" = "swarm-bastion"
     }
 }
 variable "swarm-node" {
     default = {
         "public_key_path" = "/keys/swarm.pub"
-        "private_key_path"= "/keys/swarm.key"
+        "private_key_path"= "/keys/swarm"
         "key_name" = "swarm-node"
     }
 }
 variable "swarm-master" {
     default = {
         "public_key_path" = "/keys/swarm.pub"
-        "private_key_path"= "/keys/swarm.key"
+        "private_key_path"= "/keys/swarm"
         "key_name" = "swarm-master"
     }
 }
