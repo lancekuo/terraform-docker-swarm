@@ -10,7 +10,7 @@ output "amis" {
     value = "${var.aws_amis}"
 }
 output "availability_zones" {
-    value = "${data.aws_availability_zones.azs.names}"
+    value = "${join(",", data.aws_availability_zones.azs.names)}"
 }
 
 output "project_name" {

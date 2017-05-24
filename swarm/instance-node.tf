@@ -46,3 +46,12 @@ resource "aws_instance" "swarm-node" {
         "aws_instance.swarm-manager"
     ]
 }
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sdh"
+  volume_id   = "${aws_ebs_volume.storage-metric.id}"
+  instance_id = "${element(aws_instance.swarm-node.*.id, length(aws_instance.swarm-node.*.id)-1)}"
+}
+resource "aws_ebs_volume" "storage-metric" {
+  availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
+  size              = 50
+}

@@ -32,6 +32,7 @@ variable "region" {}
 variable "ami" {}
 variable "project_name" {}
 variable "domain" {}
+variable "availability_zones" {}
 
 provider "aws" {
     region = "${var.region}"

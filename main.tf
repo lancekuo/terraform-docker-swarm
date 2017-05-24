@@ -18,6 +18,7 @@ module "swarm" {
     ami                 = "ami-3462de50"
     domain              = "lancekuo.com"
     subnets             = "${module.vpc.subnets}"
+    availability_zones  = "${module.vpc.availability_zones}"
     vpc_default_id      = "${module.vpc.vpc_default_id}"
     subnet_public       = "${module.vpc.subnet_public}"
     subnet_public_app   = "${module.vpc.subnet_public_app}"
