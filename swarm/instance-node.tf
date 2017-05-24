@@ -18,7 +18,7 @@ resource "aws_instance" "swarm-node" {
     ami                         = "${var.ami}"
     key_name                    = "${aws_key_pair.swarm-node.id}"
     vpc_security_group_ids      = ["${aws_security_group.swarm-node.id}"]
-    subnet_id                   = "${element(split(",", var.subnet_public_app), (count.index+var.swarm_master_count))}"
+    subnet_id                   = "${element(split(",", var.subnet_public_app), (count.index+var.swarm_manager_count))}"
 
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
@@ -33,7 +33,7 @@ resource "aws_instance" "swarm-node" {
 
     provisioner "remote-exec" {
         inline = [
-            "sudo docker swarm join ${aws_instance.swarm-master.0.private_ip}:2377 --token $(docker -H ${aws_instance.swarm-master.0.private_ip} swarm join-token -q worker)"
+            "sudo docker swarm join ${aws_instance.swarm-manager.0.private_ip}:2377 --token $(docker -H ${aws_instance.swarm-manager.0.private_ip} swarm join-token -q worker)"
         ]
     }
     tags  {
@@ -43,6 +43,6 @@ resource "aws_instance" "swarm-node" {
     }
     user_data = "${element(data.template_file.user-data-node.*.rendered, count.index)}"
     depends_on = [
-        "aws_instance.swarm-master"
+        "aws_instance.swarm-manager"
     ]
 }

@@ -12,11 +12,11 @@ variable "swarm-node" {
         "key_name" = "swarm-node"
     }
 }
-variable "swarm-master" {
+variable "swarm-manager" {
     default = {
-        "public_key_path" = "/keys/swarm.pub"
-        "private_key_path"= "/keys/swarm"
-        "key_name" = "swarm-master"
+        "public_key_path" = "/keys/manager.pub"
+        "private_key_path"= "/keys/manager"
+        "key_name" = "swarm-manager"
     }
 }
 variable "subnet_public" {}
@@ -25,7 +25,7 @@ variable "subnet_private" {}
 variable "subnet_on_public" {}
 variable "subnet_per_zone" {}
 variable "instance_per_subnet" {}
-variable "swarm_master_count" {}
+variable "swarm_manager_count" {}
 variable "swarm_node_count" {}
 variable "subnets" {}
 variable "region" {}

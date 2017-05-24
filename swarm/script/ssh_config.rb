@@ -84,6 +84,9 @@ data_hash['modules'][1]['resources'].each do |key, resource|
 
       user = 'ubuntu'
       node_path = pathname+'/keys/swarm'
+      if name.index('manager')
+        node_path = pathname+'/keys/manager'
+      end
       hosts[name] = {
         :hostname => hostname,
         :user => user,

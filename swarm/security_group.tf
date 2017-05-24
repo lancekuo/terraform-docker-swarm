@@ -1,8 +1,8 @@
 variable "vpc_default_id" {}
 
-resource "aws_security_group" "swarm-master" {
-    name        = "${terraform.env}-swarm-master"
-    description = "Gossip and port for swarm master internal"
+resource "aws_security_group" "swarm-manager" {
+    name        = "${terraform.env}-swarm-manager"
+    description = "Gossip and port for swarm manager internal"
     vpc_id      = "${var.vpc_default_id}"
 
     ingress {
@@ -24,7 +24,7 @@ resource "aws_security_group" "swarm-master" {
         security_groups = ["${aws_security_group.swarm-bastion.id}"]
     }
     tags {
-        Name = "${terraform.env}-swarm-master"
+        Name = "${terraform.env}-swarm-manager"
         Env  = "${terraform.env}"
     }
 }

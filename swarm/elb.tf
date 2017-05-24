@@ -3,7 +3,7 @@ resource "aws_elb" "grafana" {
 
     subnets         = ["${split(",", var.subnet_public_app)}"]
     security_groups = ["${aws_security_group.grafana-elb.id}"]
-    instances       = ["${aws_instance.swarm-node.*.id}", "${aws_instance.swarm-master.*.id}"]
+    instances       = ["${aws_instance.swarm-node.*.id}", "${aws_instance.swarm-manager.*.id}"]
 
     listener {
         instance_port     = 3000
