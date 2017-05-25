@@ -51,11 +51,44 @@ resource "aws_instance" "swarm-node" {
     ]
 }
 resource "aws_volume_attachment" "ebs_att" {
-  device_name = "/dev/sdh"
-  volume_id   = "${aws_ebs_volume.storage-metric.id}"
-  instance_id = "${element(aws_instance.swarm-node.*.id, length(aws_instance.swarm-node.*.id)-1)}"
+    device_name  = "/dev/xvdg"
+    volume_id    = "${aws_ebs_volume.storage-metric.id}"
+    instance_id  = "${element(aws_instance.swarm-node.*.id, length(aws_instance.swarm-node.*.id)-1)}"
+    skip_destroy = true
+    force_detach = false
 }
 resource "aws_ebs_volume" "storage-metric" {
-  availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
-  size              = 50
+    availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
+    size              = 100
+    tags  {
+        Name = "${terraform.env}-storage-metric"
+        Env  = "${terraform.env}"
+    }
+}
+
+resource "null_resource" "ebs_trigger" {
+
+    triggers {
+        att_id = "${aws_volume_attachment.ebs_att.id}"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "sudo mkdir /opt/prometheus",
+#            "sudo parted /dev/xvdg --script -- mklabel msdos mkpart primary ext4 0 -1",
+#            "sudo mkfs.ext4 -F /dev/xvdg1",
+            "echo \"`sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'`    /opt/prometheus    ext4    defaults,errors=remount-ro    0    0\"| sudo tee -a /etc/fstab",
+            "sudo mount `sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'` /opt/prometheus"
+        ]
+        connection {
+            bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
+            bastion_user        = "ubuntu"
+            bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+
+            type                = "ssh"
+            user                = "ubuntu"
+            host                = "${element(aws_instance.swarm-node.*.private_ip, length(aws_instance.swarm-node.*.private_ip)-1)}"
+            private_key         = "${file("${path.module}/script/${var.swarm-node["private_key_path"]}")}"
+        }
+    }
 }
