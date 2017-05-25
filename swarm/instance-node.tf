@@ -60,6 +60,10 @@ resource "aws_volume_attachment" "ebs_att" {
 resource "aws_ebs_volume" "storage-metric" {
     availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
     size              = 100
+    lifecycle = {
+        ignore_changes  = "*"
+        prevent_destroy = true
+    }
     tags  {
         Name = "${terraform.env}-storage-metric"
         Env  = "${terraform.env}"
