@@ -20,6 +20,10 @@ resource "aws_instance" "swarm-node" {
     vpc_security_group_ids      = ["${aws_security_group.swarm-node.id}"]
     subnet_id                   = "${element(split(",", var.subnet_public_app), (count.index+var.swarm_manager_count))}"
 
+    root_block_device = {
+        volume_size = 20
+    }
+
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
         bastion_user        = "ubuntu"
