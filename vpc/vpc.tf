@@ -57,7 +57,7 @@ resource "aws_subnet" "public" {
     availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags  {
-        Name              = "Public-1"
+        Name              = "Bastion-${count.index}"
         Env               = "${terraform.env}"
     }
     tags {
