@@ -1,7 +1,7 @@
 variable "region" {
     default = "ca-central-1"
 }
-variable "project-name" {
+variable "project" {
     default = "default"
 }
 provider "aws" {

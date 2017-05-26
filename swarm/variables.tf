@@ -30,7 +30,7 @@ variable "swarm_node_count" {}
 variable "subnets" {}
 variable "region" {}
 variable "ami" {}
-variable "project_name" {}
+variable "project" {}
 variable "domain" {}
 variable "availability_zones" {}
 

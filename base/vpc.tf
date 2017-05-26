@@ -3,7 +3,7 @@ resource "aws_vpc" "default" {
     enable_dns_support   = true
     enable_dns_hostnames = true
     tags  {
-        Name              = "${terraform.env}-${var.project-name}"
+        Name              = "${terraform.env}-${var.project}"
         Env               = "${terraform.env}"
     }
 }

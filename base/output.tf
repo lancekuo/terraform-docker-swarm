@@ -6,10 +6,6 @@ output "availability_zones" {
     value = "${join(",", data.aws_availability_zones.azs.names)}"
 }
 
-output "project_name" {
-    value = "${var.project-name}"
-}
-
 output "vpc_default_id" {
     value = "${aws_vpc.default.id}" 
 }

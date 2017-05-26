@@ -9,17 +9,21 @@ variable "region" {
     default = "us-east-2"
 }
 
+variable "project" {
+    default = "WRS"
+}
 
 module "vpc" {
     source  = "./base/"
 
+    project             = "${var.project}"
     region              = "${var.region}"
 }
 
 module "swarm" {
     source = "./swarm"
 
-    project_name        = "${module.vpc.project_name}"
+    project             = "${var.project}"
     region              = "${var.region}"
     ami                 = "ami-06436563"
     domain              = "lancekuo.com"
