@@ -14,7 +14,7 @@ variable "project" {
 }
 
 module "vpc" {
-    source  = "./base/"
+    source  = "./vpc/"
 
     project             = "${var.project}"
     region              = "${var.region}"
