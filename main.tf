@@ -15,7 +15,7 @@ module "swarm" {
 
     project_name        = "${module.vpc.project_name}"
     region              = "${module.vpc.region}"
-    ami                 = "ami-3462de50"
+    ami                 = "ami-06436563"
     domain              = "lancekuo.com"
     subnets             = "${module.vpc.subnets}"
     availability_zones  = "${module.vpc.availability_zones}"

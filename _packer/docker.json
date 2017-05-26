@@ -5,7 +5,7 @@
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
       "instance_type": "t2.small",
-      "region": "ca-central-1",
+      "region": "us-east-2",
       "source_ami_filter": {
         "filters": {
           "name": "*ubuntu-yakkety-16.10-amd64-server-*",
@@ -24,9 +24,9 @@
         "Build_Date": "{{isotime \"2006-01-02 03:04:05 -0700\"}}"
       },
       "type": "amazon-ebs",
-      "security_group_ids": ["sg-d94ea7b0"],
+      "security_group_ids": ["sg-d48f7ebd"],
       "ssh_username": "ubuntu",
-      "subnet_id": "subnet-0337d56a"
+      "subnet_id": "subnet-fa16e293"
     }
   ],
   "post-processors": null,
