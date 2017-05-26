@@ -27,7 +27,6 @@ module "swarm" {
     region              = "${var.region}"
     ami                 = "ami-06436563"
     domain              = "lancekuo.com"
-    subnets             = "${module.vpc.subnets}"
     availability_zones  = "${module.vpc.availability_zones}"
     vpc_default_id      = "${module.vpc.vpc_default_id}"
     subnet_public       = "${module.vpc.subnet_public}"
@@ -37,7 +36,7 @@ module "swarm" {
     subnet_per_zone     = "${module.vpc.subnet_per_zone}"
     instance_per_subnet = "${module.vpc.instance_per_subnet}"
     swarm_manager_count = "${module.vpc.swarm_manager_count}"
-    swarm_node_count    = "${((module.vpc.instance_per_subnet*module.vpc.subnet_per_zone)-module.vpc.swarm_manager_count)}"
+    swarm_node_count    = "${(module.vpc.instance_per_subnet*length(split(",", module.vpc.availability_zones))-module.vpc.swarm_manager_count)}"
 }
 
 output "swarm-node" {

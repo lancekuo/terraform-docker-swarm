@@ -27,7 +27,6 @@ variable "subnet_per_zone" {}
 variable "instance_per_subnet" {}
 variable "swarm_manager_count" {}
 variable "swarm_node_count" {}
-variable "subnets" {}
 variable "region" {}
 variable "ami" {}
 variable "project" {}

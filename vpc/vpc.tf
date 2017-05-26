@@ -1,5 +1,5 @@
 resource "aws_vpc" "default" {
-    cidr_block           = "${lookup(var.subnets, terraform.env)}"
+    cidr_block           = "${lookup(var.subnets_map, terraform.env)}"
     enable_dns_support   = true
     enable_dns_hostnames = true
     tags  {
@@ -53,7 +53,7 @@ resource "aws_route_table" "private" {
 resource "aws_subnet" "public" {
     count                   = "${var.subnet-on-public}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "public_${count.index+1}.${terraform.env}")}"
+    cidr_block              = "${replace(lookup(var.subnets_map, "${terraform.env}_subnet_template"), "PLACEHOLDER", lookup(var.subnets_map, "bastion_def")+count.index)}"
     availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags  {
@@ -64,25 +64,25 @@ resource "aws_subnet" "public" {
     }
 }
 resource "aws_subnet" "public-app" {
-    count                   = "${var.subnet-per-zone}"
+    count                   = "${var.subnet-per-zone*length(data.aws_availability_zones.azs.names)}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "app_${count.index+1}.${terraform.env}")}"
+    cidr_block              = "${replace(lookup(var.subnets_map, "${terraform.env}_subnet_template"), "PLACEHOLDER", lookup(var.subnets_map, "app_def")+count.index)}"
     availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags {
-        Name              = "Public-app${count.index}"
+        Name              = "Public-app-${count.index}"
         Env               = "${terraform.env}"
     }
 }
 
 resource "aws_subnet" "private" {
-    count                   = "${var.subnet-per-zone}"
+    count                   = "${var.subnet-per-zone*length(data.aws_availability_zones.azs.names)}"
     vpc_id                  = "${aws_vpc.default.id}"
-    cidr_block              = "${lookup(var.subnets, "private_${count.index+1}.${terraform.env}")}"
+    cidr_block              = "${replace(lookup(var.subnets_map, "${terraform.env}_subnet_template"), "PLACEHOLDER", lookup(var.subnets_map, "private_def")+count.index)}"
     availability_zone       = "${element(data.aws_availability_zones.azs.names, count.index)}"
     map_public_ip_on_launch = true
     tags {
-        Name              = "Private${count.index}"
+        Name              = "Private-${count.index}"
         Env               = "${terraform.env}"
     }
 }
@@ -94,13 +94,13 @@ resource "aws_route_table_association" "public-route" {
 }
 
 resource "aws_route_table_association" "public-app-route" {
-    count = "${var.subnet-per-zone}"
+    count = "${var.subnet-per-zone*length(data.aws_availability_zones.azs.names)}"
     subnet_id      = "${element(aws_subnet.public-app.*.id, count.index)}"
     route_table_id = "${aws_default_route_table.public.id}"
 }
 
 resource "aws_route_table_association" "private-route" {
-    count = "${var.subnet-per-zone}"
+    count = "${var.subnet-per-zone*length(data.aws_availability_zones.azs.names)}"
     subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
     route_table_id = "${aws_route_table.private.id}"
 }
