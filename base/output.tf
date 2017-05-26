@@ -2,10 +2,6 @@ output "subnets" {
     value = "${var.subnets}"
 }
 
-output "region" {
-    value = "${var.region}"
-}
-
 output "availability_zones" {
     value = "${join(",", data.aws_availability_zones.azs.names)}"
 }

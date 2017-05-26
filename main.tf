@@ -5,16 +5,22 @@ terraform {
         region = "ca-central-1"
     }
 }
+variable "region" {
+    default = "us-east-2"
+}
+
 
 module "vpc" {
     source  = "./base/"
+
+    region              = "${var.region}"
 }
 
 module "swarm" {
     source = "./swarm"
 
     project_name        = "${module.vpc.project_name}"
-    region              = "${module.vpc.region}"
+    region              = "${var.region}"
     ami                 = "ami-06436563"
     domain              = "lancekuo.com"
     subnets             = "${module.vpc.subnets}"
