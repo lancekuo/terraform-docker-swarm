@@ -67,6 +67,7 @@ resource "aws_ebs_volume" "storage-metric" {
     tags  {
         Name = "${terraform.env}-storage-metric"
         Env  = "${terraform.env}"
+        Role = "storage-metric"
     }
 }
 
