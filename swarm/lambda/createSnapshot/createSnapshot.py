@@ -31,7 +31,7 @@ def lambda_handler(event, context):
                 int(t.get('Value')) for t in instance['Tags']
                 if t['Key'] == 'Retention'][0]
         except IndexError:
-            retention_days = 7
+            retention_days = 14
 
         for dev in instance['BlockDeviceMappings']:
             if dev.get('Ebs', None) is None:
@@ -41,7 +41,6 @@ def lambda_handler(event, context):
             if dev_name.find("xvd") >0:
                 print "\tFound EBS volume %s (%s) on instance %s" % (
                     vol_id, dev_name, instance['InstanceId'])
-    
                 # figure out instance name if there is one
                 instance_name = ""
                 for tag in instance['Tags']:
