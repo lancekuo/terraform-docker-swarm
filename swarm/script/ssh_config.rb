@@ -98,4 +98,5 @@ data_hash['modules'][1]['resources'].each do |key, resource|
 end
 renderer2 = ERB.new(get_template_bastion)
 puts renderer2.result(SshConfig.new(hosts).get_binding)
-File.write(pathname+'/ssh_config_'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))
+File.write(File.expand_path('~')+'/.ssh/config.d/'+bastion_name[0..bastion_name.index('bastion')-2], renderer.result(SshConfig.new(bastion).get_binding)+renderer2.result(SshConfig.new(hosts).get_binding))
+system('cat '+File.expand_path('~')+'/.ssh/config.d/* > '+File.expand_path('~')+'/.ssh/config')
