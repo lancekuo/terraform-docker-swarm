@@ -8,7 +8,7 @@ data "template_file" "user-data-master" {
     count = "${var.swarm_manager_count}"
 
     vars {
-        hostname = "${terraform.env}-manager-${count.index}"
+        hostname = "${terraform.env}-swarm-manager-${count.index}"
         domain   = "${var.domain}"
     }
 }

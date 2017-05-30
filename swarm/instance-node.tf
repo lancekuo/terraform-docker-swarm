@@ -8,7 +8,7 @@ data "template_file" "user-data-node" {
     count = "${var.swarm_node_count}"
 
     vars {
-        hostname = "${terraform.env}-node-${count.index}"
+        hostname = "${terraform.env}-swarm-node-${count.index}"
         domain   = "${var.domain}"
     }
 }
