@@ -96,4 +96,20 @@ resource "null_resource" "ebs_trigger" {
             private_key         = "${file("${path.module}/script/${var.swarm-node["private_key_path"]}")}"
         }
     }
+    provisioner "remote-exec" {
+        inline = [
+            "docker node update --label-add type=storage ${element(aws_instance.swarm-node.*.tags.Name, length(aws_instance.swarm-node.*.id)-1)}",
+            "docker node update --label-add type=internal ${element(aws_instance.swarm-manager.*.tags.Name, length(aws_instance.swarm-manager.*.id)-1)}",
+        ]
+        connection {
+            bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
+            bastion_user        = "ubuntu"
+            bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+
+            type                = "ssh"
+            user                = "ubuntu"
+            host                = "${aws_instance.swarm-manager.0.private_ip}"
+            private_key         = "${file("${path.module}/script/${var.swarm-manager["private_key_path"]}")}"
+        }
+    }
 }
