@@ -16,15 +16,16 @@ variable "project" {
 module "vpc" {
     source  = "./vpc/"
 
-    project             = "${var.project}"
-    region              = "${var.region}"
+    project = "${var.project}"
+    region  = "${var.region}"
 }
 
 module "swarm" {
-    source = "./swarm"
+    source              = "./swarm"
 
     project             = "${var.project}"
     region              = "${var.region}"
+
     ami                 = "ami-06436563"
     domain              = "lancekuo.com"
     vpc_default_id      = "${module.vpc.vpc_default_id}"

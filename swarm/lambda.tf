@@ -1,7 +1,7 @@
 resource "aws_iam_role" "lambda-ebs-backup" {
-  name = "lambda-ebs-backup"
-
-  assume_role_policy = <<EOF
+    provider           = "aws.${var.region}"
+    name               = "lambda-ebs-backup"
+    assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -18,9 +18,10 @@ resource "aws_iam_role" "lambda-ebs-backup" {
 EOF
 }
 resource "aws_iam_policy" "ebs-backup-worker" {
+    provider    = "aws.${var.region}"
     name        = "ebs-backup-worker"
     description = "ebs-backup-worker"
-    policy = <<EOF
+    policy      = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -62,11 +63,13 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "describe-attach" {
+    provider   = "aws.${var.region}"
     role       = "${aws_iam_role.lambda-ebs-backup.name}"
     policy_arn = "${aws_iam_policy.ebs-backup-worker.arn}"
 }
 
 resource "aws_lambda_function" "ebs-backup-create" {
+    provider         = "aws.${var.region}"
     filename         = "${path.module}/lambda/createSnapshot/createSnapshot.zip"
     function_name    = "createSnapshot"
     role             = "${aws_iam_role.lambda-ebs-backup.arn}"
@@ -81,6 +84,7 @@ resource "aws_lambda_function" "ebs-backup-create" {
     }
 }
 resource "aws_lambda_function" "ebs-backup-delete" {
+    provider         = "aws.${var.region}"
     filename         = "${path.module}/lambda/deleteSnapshot/deleteSnapshot.zip"
     function_name    = "deleteSnapshot"
     role             = "${aws_iam_role.lambda-ebs-backup.arn}"
@@ -95,33 +99,38 @@ resource "aws_lambda_function" "ebs-backup-delete" {
     }
 }
 resource "aws_cloudwatch_event_rule" "every_day" {
-    name = "every-day"
-    description = "Fires every day"
+    provider            = "aws.${var.region}"
+    name                = "every-day"
+    description         = "Fires every day"
     schedule_expression = "rate(1 day)"
 }
 
 resource "aws_cloudwatch_event_target" "snapshot_every_day" {
-    rule = "${aws_cloudwatch_event_rule.every_day.name}"
+    provider  = "aws.${var.region}"
+    rule      = "${aws_cloudwatch_event_rule.every_day.name}"
     target_id = "takeSnapshot"
-    arn = "${aws_lambda_function.ebs-backup-create.arn}"
+    arn       = "${aws_lambda_function.ebs-backup-create.arn}"
 }
 resource "aws_cloudwatch_event_target" "cleanup_every_day" {
-    rule = "${aws_cloudwatch_event_rule.every_day.name}"
+    provider  = "aws.${var.region}"
+    rule      = "${aws_cloudwatch_event_rule.every_day.name}"
     target_id = "cleanSnapshot"
-    arn = "${aws_lambda_function.ebs-backup-delete.arn}"
+    arn       = "${aws_lambda_function.ebs-backup-delete.arn}"
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_EBSToSnapshotBackup" {
-    statement_id = "AllowExecutionFromCloudWatch"
-    action = "lambda:InvokeFunction"
+    provider      = "aws.${var.region}"
+    statement_id  = "AllowExecutionFromCloudWatch"
+    action        = "lambda:InvokeFunction"
     function_name = "${aws_lambda_function.ebs-backup-create.function_name}"
-    principal = "events.amazonaws.com"
-    source_arn = "${aws_cloudwatch_event_rule.every_day.arn}"
+    principal     = "events.amazonaws.com"
+    source_arn    = "${aws_cloudwatch_event_rule.every_day.arn}"
 }
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_EBSToSnapshotCleanup" {
-    statement_id = "AllowExecutionFromCloudWatch"
-    action = "lambda:InvokeFunction"
+    provider      = "aws.${var.region}"
+    statement_id  = "AllowExecutionFromCloudWatch"
+    action        = "lambda:InvokeFunction"
     function_name = "${aws_lambda_function.ebs-backup-delete.function_name}"
-    principal = "events.amazonaws.com"
-    source_arn = "${aws_cloudwatch_event_rule.every_day.arn}"
+    principal     = "events.amazonaws.com"
+    source_arn    = "${aws_cloudwatch_event_rule.every_day.arn}"
 }

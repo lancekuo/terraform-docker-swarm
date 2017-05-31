@@ -1,6 +1,7 @@
 variable "vpc_default_id" {}
 
 resource "aws_security_group" "swarm-manager" {
+    provider    = "aws.${var.region}"
     name        = "${terraform.env}-swarm-manager"
     description = "Gossip and port for swarm manager internal"
     vpc_id      = "${var.vpc_default_id}"
@@ -29,6 +30,7 @@ resource "aws_security_group" "swarm-manager" {
     }
 }
 resource "aws_security_group" "swarm-node" {
+    provider    = "aws.${var.region}"
     name        = "${terraform.env}-swarm-node"
     description = "Gossip and port for swarm mode internal"
     vpc_id      = "${var.vpc_default_id}"
@@ -109,6 +111,7 @@ resource "aws_security_group" "swarm-node" {
 }
 
 resource "aws_security_group" "swarm-bastion" {
+    provider    = "aws.${var.region}"
     name        = "${terraform.env}-swarm-bastion"
     description = "Access to the bastion machine"
     vpc_id      = "${var.vpc_default_id}"
@@ -132,6 +135,7 @@ resource "aws_security_group" "swarm-bastion" {
     }
 }
 resource "aws_security_group" "grafana-elb" {
+    provider    = "aws.${var.region}"
     name        = "${terraform.env}-grafana-elb"
     description = "Provide the access to internet to connect to internal grafana site"
     vpc_id      = "${var.vpc_default_id}"

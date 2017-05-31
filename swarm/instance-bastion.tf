@@ -1,8 +1,10 @@
 resource "aws_key_pair" "swarm-bastion" {
+    provider   = "aws.${var.region}"
     key_name   = "${terraform.env}-${var.region}-${var.swarm-bastion["key_name"]}"
     public_key = "${file("${path.module}/script/${var.swarm-bastion["public_key_path"]}")}"
 }
 resource "aws_instance" "swarm-bastion" {
+    provider               = "aws.${var.region}"
     instance_type          = "t2.nano"
     ami                    = "${var.ami}"
     key_name               = "${aws_key_pair.swarm-bastion.id}"
@@ -30,6 +32,7 @@ resource "aws_instance" "swarm-bastion" {
     }
 }
 resource "aws_eip" "swarm-bastion" {
-    vpc = true
+    provider = "aws.${var.region}"
+    vpc      = true
     instance = "${aws_instance.swarm-bastion.id}"
 }

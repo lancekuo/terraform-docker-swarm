@@ -1,11 +1,12 @@
 resource "aws_key_pair" "swarm-manager" {
+    provider   = "aws.${var.region}"
     key_name   = "${terraform.env}-${var.region}-${var.swarm-manager["key_name"]}"
     public_key = "${file("${path.module}/script/${var.swarm-manager["public_key_path"]}")}"
 }
 
 data "template_file" "user-data-master" {
     template = "${file("${path.module}/cloud-init/hostname")}"
-    count = "${var.swarm_manager_count}"
+    count    = "${var.swarm_manager_count}"
 
     vars {
         hostname = "${terraform.env}-swarm-manager-${count.index}"
@@ -13,12 +14,13 @@ data "template_file" "user-data-master" {
     }
 }
 resource "aws_instance" "swarm-manager" {
-    count                       = "${var.swarm_manager_count}"
-    instance_type               = "t2.small"
-    ami                         = "${var.ami}"
-    key_name                    = "${aws_key_pair.swarm-manager.id}"
-    vpc_security_group_ids      = ["${aws_security_group.swarm-node.id}", "${aws_security_group.swarm-manager.id}"]
-    subnet_id                   = "${element(split(",", var.subnet_public_app), count.index)}"
+    provider               = "aws.${var.region}"
+    count                  = "${var.swarm_manager_count}"
+    instance_type          = "t2.small"
+    ami                    = "${var.ami}"
+    key_name               = "${aws_key_pair.swarm-manager.id}"
+    vpc_security_group_ids = ["${aws_security_group.swarm-node.id}", "${aws_security_group.swarm-manager.id}"]
+    subnet_id              = "${element(split(",", var.subnet_public_app), count.index)}"
 
     root_block_device = {
         volume_size = 20

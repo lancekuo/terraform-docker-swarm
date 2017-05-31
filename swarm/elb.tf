@@ -1,4 +1,5 @@
 resource "aws_elb" "grafana" {
+    provider = "aws.${var.region}"
     name = "${terraform.env}-grafana"
 
     subnets         = ["${split(",", var.subnet_public_app)}"]
