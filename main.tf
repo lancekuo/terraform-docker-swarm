@@ -9,6 +9,10 @@ variable "region" {
     default = "us-east-2"
 }
 
+variable "docker-ami" {
+    default = "ami-d63610b3"
+}
+
 variable "project" {
     default = "WRS"
 }
@@ -26,7 +30,7 @@ module "swarm" {
     project             = "${var.project}"
     region              = "${var.region}"
 
-    ami                 = "ami-06436563"
+    ami                 = "${var.docker-ami}"
     domain              = "lancekuo.com"
     vpc_default_id      = "${module.vpc.vpc_default_id}"
 
