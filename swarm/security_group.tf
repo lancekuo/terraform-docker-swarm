@@ -134,6 +134,24 @@ resource "aws_security_group" "swarm-bastion" {
         Env  = "${terraform.env}"
     }
 }
+
+resource "aws_security_group" "swarm-outgoing-service" {
+    provider    = "aws.${var.region}"
+    name        = "${terraform.env}-swarm-outgoing-service"
+    description = "Provide the access to internet to connect to internal sites"
+    vpc_id      = "${var.vpc_default_id}"
+
+    ingress {
+        from_port   = 3000
+        to_port     = 3000
+        protocol    = "tcp"
+        security_groups = ["${aws_security_group.grafana-elb.id}"]
+    }
+    tags {
+        Name = "${terraform.env}-swarm-outgoing-service"
+        Env  = "${terraform.env}"
+    }
+}
 resource "aws_security_group" "grafana-elb" {
     provider    = "aws.${var.region}"
     name        = "${terraform.env}-grafana-elb"

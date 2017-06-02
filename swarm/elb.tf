@@ -12,6 +12,13 @@ resource "aws_elb" "grafana" {
         lb_port           = 80
         lb_protocol       = "http"
     }
+    health_check {
+        healthy_threshold   = 2
+        unhealthy_threshold = 2
+        timeout             = 4
+        target              = "TCP:3000"
+        interval            = 5
+    }
     tags  {
         Env = "${terraform.env}"
     }
