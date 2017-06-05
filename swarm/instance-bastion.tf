@@ -1,3 +1,12 @@
+data "template_file" "user-data-bastion" {
+    template = "${file("${path.module}/cloud-init/hostname")}"
+    count    = 1
+
+    vars {
+        hostname = "${terraform.env}-${var.project}-bastion-${count.index}"
+        domain   = "${var.domain}"
+    }
+}
 resource "aws_key_pair" "swarm-bastion" {
     provider   = "aws.${var.region}"
     key_name   = "${terraform.env}-${var.region}-${var.swarm-bastion["key_name"]}"
@@ -5,6 +14,7 @@ resource "aws_key_pair" "swarm-bastion" {
 }
 resource "aws_instance" "swarm-bastion" {
     provider               = "aws.${var.region}"
+    count                  = 1
     instance_type          = "t2.nano"
     ami                    = "${var.ami}"
     key_name               = "${aws_key_pair.swarm-bastion.id}"
@@ -20,8 +30,6 @@ resource "aws_instance" "swarm-bastion" {
         inline = [
             "sudo curl -L https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine && chmod +x /tmp/docker-machine && sudo cp /tmp/docker-machine /usr/local/bin/docker-machine",
             "sudo curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
-            "sudo systemctl stop docker",
-            "sudo systemctl disable docker",
         ]
     }
     tags  {
@@ -30,6 +38,7 @@ resource "aws_instance" "swarm-bastion" {
         Docker-machine = "sudo curl -L https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine && chmod +x /tmp/docker-machine && sudo cp /tmp/docker-machine /usr/local/bin/docker-machine"
         Docker-compose = "sudo curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose"
     }
+    user_data  = "${element(data.template_file.user-data-bastion.*.rendered, count.index)}"
 }
 resource "aws_eip" "swarm-bastion" {
     provider = "aws.${var.region}"
