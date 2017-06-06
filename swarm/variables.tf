@@ -1,24 +1,3 @@
-variable "swarm-bastion" {
-    default = {
-        "public_key_path"  = "/keys/bastion.pub"
-        "private_key_path" = "/keys/bastion"
-        "key_name"         = "swarm-bastion"
-    }
-}
-variable "swarm-node" {
-    default = {
-        "public_key_path"  = "/keys/swarm.pub"
-        "private_key_path" = "/keys/swarm"
-        "key_name"         = "swarm-node"
-    }
-}
-variable "swarm-manager" {
-    default = {
-        "public_key_path"  = "/keys/manager.pub"
-        "private_key_path" = "/keys/manager"
-        "key_name"         = "swarm-manager"
-    }
-}
 variable "subnet_public" {}
 variable "subnet_public_app" {}
 variable "subnet_private" {}
@@ -32,6 +11,16 @@ variable "ami" {}
 variable "project" {}
 variable "domain" {}
 variable "availability_zones" {}
+
+variable "bastion_public_key_path" {}
+variable "bastion_private_key_path" {}
+variable "bastion_aws_key_name" {}
+variable "manager_public_key_path" {}
+variable "manager_private_key_path" {}
+variable "manager_aws_key_name" {}
+variable "node_public_key_path" {}
+variable "node_private_key_path" {}
+variable "node_aws_key_name" {}
 
 provider "aws" {
     alias  = "${var.region}"

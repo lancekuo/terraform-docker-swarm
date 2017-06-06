@@ -1,7 +1,7 @@
 resource "aws_key_pair" "swarm-manager" {
     provider   = "aws.${var.region}"
-    key_name   = "${terraform.env}-${var.region}-${var.swarm-manager["key_name"]}"
-    public_key = "${file("${path.module}/script/${var.swarm-manager["public_key_path"]}")}"
+    key_name   = "${terraform.env}-${var.region}-${var.manager_aws_key_name}"
+    public_key = "${file("${path.root}${var.manager_public_key_path}")}"
 }
 
 data "template_file" "user-data-master" {
@@ -29,19 +29,19 @@ resource "aws_instance" "swarm-manager" {
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
         bastion_user        = "ubuntu"
-        bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+        bastion_private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
 
         type                = "ssh"
         user                = "ubuntu"
         host                = "${self.private_ip}"
-        private_key         = "${file("${path.module}/script/${var.swarm-manager["private_key_path"]}")}"
+        private_key         = "${file("${path.root}${var.manager_private_key_path}")}"
     }
 
     provisioner "remote-exec" {
         inline = [" if [ ${count.index} -eq 0 ]; then sudo docker swarm init; else sudo docker swarm join ${aws_instance.swarm-manager.0.private_ip}:2377 --token $(docker -H ${aws_instance.swarm-manager.0.private_ip} swarm join-token -q manager); fi"]
     }
     tags  {
-        Name = "${terraform.env}-swarm-manager-${count.index}"
+        Name = "${terraform.env}-${var.project}-manager-${count.index}"
         Env  = "${terraform.env}"
         Role = "swarm-manager"
     }

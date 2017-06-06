@@ -1,7 +1,7 @@
 resource "aws_key_pair" "swarm-node" {
     provider   = "aws.${var.region}"
-    key_name   = "${terraform.env}-${var.region}-${var.swarm-node["key_name"]}"
-    public_key = "${file("${path.module}/script/${var.swarm-node["public_key_path"]}")}"
+    key_name   = "${terraform.env}-${var.region}-${var.node_aws_key_name}"
+    public_key = "${file("${path.root}${var.node_public_key_path}")}"
 }
 
 data "template_file" "user-data-node" {
@@ -29,12 +29,12 @@ resource "aws_instance" "swarm-node" {
     connection {
         bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
         bastion_user        = "ubuntu"
-        bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+        bastion_private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
 
         type                = "ssh"
         user                = "ubuntu"
         host                = "${self.private_ip}"
-        private_key         = "${file("${path.module}/script/${var.swarm-node["private_key_path"]}")}"
+        private_key         = "${file("${path.root}${var.node_private_key_path}")}"
     }
 
     provisioner "remote-exec" {
@@ -43,7 +43,7 @@ resource "aws_instance" "swarm-node" {
         ]
     }
     tags  {
-        Name = "${terraform.env}-swarm-node-${count.index}"
+        Name = "${terraform.env}-${var.project}-node-${count.index}"
         Env  = "${terraform.env}"
         Role = "swarm-node"
     }
@@ -91,12 +91,12 @@ resource "null_resource" "ebs_trigger" {
         connection {
             bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
             bastion_user        = "ubuntu"
-            bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+            bastion_private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
 
             type                = "ssh"
             user                = "ubuntu"
             host                = "${element(aws_instance.swarm-node.*.private_ip, length(aws_instance.swarm-node.*.private_ip)-1)}"
-            private_key         = "${file("${path.module}/script/${var.swarm-node["private_key_path"]}")}"
+            private_key         = "${file("${path.root}${var.node_private_key_path}")}"
         }
     }
     provisioner "remote-exec" {
@@ -107,12 +107,12 @@ resource "null_resource" "ebs_trigger" {
         connection {
             bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
             bastion_user        = "ubuntu"
-            bastion_private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+            bastion_private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
 
             type                = "ssh"
             user                = "ubuntu"
             host                = "${aws_instance.swarm-manager.0.private_ip}"
-            private_key         = "${file("${path.module}/script/${var.swarm-manager["private_key_path"]}")}"
+            private_key         = "${file("${path.root}${var.manager_private_key_path}")}"
         }
     }
 }

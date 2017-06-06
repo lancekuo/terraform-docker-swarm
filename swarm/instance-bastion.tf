@@ -9,8 +9,8 @@ data "template_file" "user-data-bastion" {
 }
 resource "aws_key_pair" "swarm-bastion" {
     provider   = "aws.${var.region}"
-    key_name   = "${terraform.env}-${var.region}-${var.swarm-bastion["key_name"]}"
-    public_key = "${file("${path.module}/script/${var.swarm-bastion["public_key_path"]}")}"
+    key_name   = "${terraform.env}-${var.region}-${var.bastion_aws_key_name}"
+    public_key = "${file("${path.root}${var.bastion_public_key_path}")}"
 }
 resource "aws_instance" "swarm-bastion" {
     provider               = "aws.${var.region}"
@@ -24,7 +24,7 @@ resource "aws_instance" "swarm-bastion" {
     connection {
         type        = "ssh"
         user        = "ubuntu"
-        private_key = "${file("${path.module}/script/${var.swarm-bastion["private_key_path"]}")}"
+        private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
     }
     provisioner "remote-exec" {
         inline = [

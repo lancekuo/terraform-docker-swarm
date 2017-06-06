@@ -132,7 +132,7 @@ resource "null_resource" "registry_trigger" {
             type        = "ssh"
             user        = "ubuntu"
             host        = "${var.bastion_public_ip}"
-            private_key = "${file("${path.module}/../swarm/script/${var.swarm_bastion_private_key_path}")}"
+            private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
         }
     }
     provisioner "remote-exec" {
@@ -144,7 +144,7 @@ resource "null_resource" "registry_trigger" {
             type        = "ssh"
             user        = "ubuntu"
             host        = "${var.bastion_public_ip}"
-            private_key = "${file("${path.module}/../swarm/script/${var.swarm_bastion_private_key_path}")}"
+            private_key = "${file("${path.root}${var.bastion_private_key_path}")}"
         }
     }
 }

@@ -10,6 +10,3 @@ output "bastion_public_ip" {
 output "bastion_private_ip" {
     value = "${join(",", aws_instance.swarm-bastion.*.private_ip)}"
 }
-output "swarm_bastion_private_key_path" {
-    value = "${var.swarm-bastion["private_key_path"]}"
-}
