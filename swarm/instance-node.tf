@@ -101,7 +101,7 @@ resource "null_resource" "ebs_trigger" {
     }
     provisioner "remote-exec" {
         inline = [
-            "docker node update --label-add type=storage ${element(aws_instance.swarm-node.*.tags.Name, length(aws_instance.swarm-node.*.id)-1)}",
+            "docker node update --label-add type=storage ${element(aws_instance.swarm-node.*.tags.Name, 0)}",
             "docker node update --label-add type=internal ${element(aws_instance.swarm-manager.*.tags.Name, length(aws_instance.swarm-manager.*.id)-1)}",
         ]
         connection {
