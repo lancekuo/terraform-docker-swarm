@@ -82,11 +82,11 @@ resource "null_resource" "ebs_trigger" {
 
     provisioner "remote-exec" {
         inline = [
-            "sudo mkdir /opt/prometheus",
+            "if [ -d /opt/prometheus/ ];then echo \"The folder exists.\";else sudo mkdir /opt/prometheus;echo \"Mount point created.\";fi",
 #            "sudo parted /dev/xvdg --script -- mklabel msdos mkpart primary ext4 0 -1",
 #            "sudo mkfs.ext4 -F /dev/xvdg1",
-            "echo \"`sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'`    /opt/prometheus    ext4    defaults,errors=remount-ro    0    0\"| sudo tee -a /etc/fstab",
-            "sudo mount `sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'` /opt/prometheus"
+            "if ! grep -e \"$$(sudo file -s /dev/xvdg1|awk -F\\  '{print $8}')    /opt/prometheus\" /etc/fstab 1> /dev/null;then echo \"`sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'`    /opt/prometheus    ext4    defaults,errors=remount-ro    0    0\"| sudo tee -a /etc/fstab;else echo 'Fstab has the mount point'; fi ",
+            "if grep -qs '/opt/prometheus' /proc/mounts; then echo \"/opt/prometheus has mounted.\"; else sudo mount `sudo file -s /dev/xvdg1|awk -F\\  '{print $8}'` /opt/prometheus; fi",
         ]
         connection {
             bastion_host        = "${aws_eip.swarm-bastion.public_ip}"
