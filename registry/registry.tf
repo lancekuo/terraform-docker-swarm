@@ -109,7 +109,7 @@ EOF
 
 resource "aws_s3_bucket" "registry" {
     provider = "aws.${var.region}"
-    bucket = "registry-${lower(var.project)}.internal"
+    bucket = "${terraform.env}-registry.${lower(var.project)}.internal"
     acl    = "private"
 
     tags {
@@ -122,6 +122,7 @@ resource "null_resource" "registry_trigger" {
     triggers {
         registry_id = "${aws_s3_bucket.registry.id}"
         record_name = "${aws_route53_record.registry.name}"
+        bastion_ip  = "${var.bastion_public_ip}"
     }
 
     provisioner "remote-exec" {

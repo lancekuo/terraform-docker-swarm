@@ -56,7 +56,7 @@ resource "aws_volume_attachment" "ebs_att" {
     provider     = "aws.${var.region}"
     device_name  = "/dev/xvdg"
     volume_id    = "${aws_ebs_volume.storage-metric.id}"
-    instance_id  = "${element(aws_instance.swarm-node.*.id, length(aws_instance.swarm-node.*.id)-1)}"
+    instance_id  = "${element(aws_instance.swarm-node.*.id, 0)}"
     skip_destroy = true
     force_detach = false
 }
@@ -64,7 +64,7 @@ resource "aws_ebs_volume" "storage-metric" {
     provider          = "aws.${var.region}"
     availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
     size              = 100
-    lifecycle = {
+    lifecycle         = {
         ignore_changes  = "*"
         prevent_destroy = true
     }
@@ -95,7 +95,7 @@ resource "null_resource" "ebs_trigger" {
 
             type                = "ssh"
             user                = "ubuntu"
-            host                = "${element(aws_instance.swarm-node.*.private_ip, length(aws_instance.swarm-node.*.private_ip)-1)}"
+            host                = "${element(aws_instance.swarm-node.*.private_ip, 0)}"
             private_key         = "${file("${path.root}${var.node_private_key_path}")}"
         }
     }
@@ -111,7 +111,7 @@ resource "null_resource" "ebs_trigger" {
 
             type                = "ssh"
             user                = "ubuntu"
-            host                = "${aws_instance.swarm-manager.0.private_ip}"
+            host                = "${element(aws_instance.swarm-manager.*.private_ip, 0)}"
             private_key         = "${file("${path.root}${var.manager_private_key_path}")}"
         }
     }

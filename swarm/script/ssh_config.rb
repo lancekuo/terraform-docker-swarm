@@ -56,7 +56,7 @@ pathname = File.expand_path(File.dirname(__FILE__))+'/../..'
 data_hash['modules'][2]['resources'].each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
-    name = attributes['tags.Name']
+    name = attributes['tags.Name'].downcase
     if name.index('bastion')
       bastion_name = name
     end
@@ -78,7 +78,7 @@ puts renderer.result(SshConfig.new(bastion).get_binding)
 data_hash['modules'][2]['resources'].each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
-    name = attributes['tags.Name']
+    name = attributes['tags.Name'].downcase
     hostname = attributes['private_ip']
     if !name.index('bastion')
 
