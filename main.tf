@@ -85,8 +85,8 @@ module "registry" {
     region                   = "${var.region}"
 
     vpc_default_id           = "${module.vpc.vpc_default_id}"
-    bastion_public_ip        = "${element(split(",", module.swarm.bastion_public_ip), 0)}"
-    bastion_private_ip       = "${element(split(",", module.swarm.bastion_private_ip), 0)}"
+    bastion_public_ip        = "${module.swarm.bastion_public_ip}"
+    bastion_private_ip       = "${module.swarm.bastion_private_ip}"
     bastion_private_key_path = "${var.bastion-key["private_key_path"]}"
 }
 
