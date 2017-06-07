@@ -50,10 +50,17 @@ hosts = {}
 bastion = {}
 bastion_name = ""
 eip = ""
+resources = {}
 
 pathname = File.expand_path(File.dirname(__FILE__))+'/../..'
 
-data_hash['modules'][2]['resources'].each do |key, resource|
+data_hash['modules'].each do |i|
+    if i['resources'].empty? == false
+        resources = resources.merge(i['resources'])
+    end
+end
+
+resources.each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
     name = attributes['tags.Name'].downcase
@@ -75,7 +82,7 @@ bastion[bastion_name] = {
 renderer = ERB.new(get_template)
 puts renderer.result(SshConfig.new(bastion).get_binding)
 
-data_hash['modules'][2]['resources'].each do |key, resource|
+resources.each do |key, resource|
   if ['aws_instance'].include?(resource['type'])
     attributes = resource['primary']['attributes']
     name = attributes['tags.Name'].downcase
