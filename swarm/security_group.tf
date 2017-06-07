@@ -25,8 +25,9 @@ resource "aws_security_group" "swarm-manager" {
         security_groups = ["${aws_security_group.swarm-bastion.id}"]
     }
     tags {
-        Name = "${terraform.env}-swarm-manager"
-        Env  = "${terraform.env}"
+        Name    = "${terraform.env}-swarm-manager"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }
 resource "aws_security_group" "swarm-node" {
@@ -105,8 +106,9 @@ resource "aws_security_group" "swarm-node" {
         cidr_blocks     = ["0.0.0.0/0"]
     }
     tags {
-        Name = "${terraform.env}-swarm-node"
-        Env  = "${terraform.env}"
+        Name    = "${terraform.env}-swarm-node"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }
 
@@ -130,8 +132,9 @@ resource "aws_security_group" "swarm-bastion" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags {
-        Name = "${terraform.env}-swarm-bastion"
-        Env  = "${terraform.env}"
+        Name    = "${terraform.env}-swarm-bastion"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }
 
@@ -148,8 +151,9 @@ resource "aws_security_group" "swarm-outgoing-service" {
         security_groups = ["${aws_security_group.grafana-elb.id}"]
     }
     tags {
-        Name = "${terraform.env}-swarm-outgoing-service"
-        Env  = "${terraform.env}"
+        Name    = "${terraform.env}-swarm-outgoing-service"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }
 resource "aws_security_group" "grafana-elb" {
@@ -165,7 +169,8 @@ resource "aws_security_group" "grafana-elb" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags {
-        Name = "${terraform.env}-grafana-elb"
-        Env  = "${terraform.env}"
+        Name    = "${terraform.env}-grafana-elb"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }

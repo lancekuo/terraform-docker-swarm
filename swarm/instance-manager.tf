@@ -41,9 +41,11 @@ resource "aws_instance" "swarm-manager" {
         inline = [" if [ ${count.index} -eq 0 ]; then sudo docker swarm init; else sudo docker swarm join ${aws_instance.swarm-manager.0.private_ip}:2377 --token $(docker -H ${aws_instance.swarm-manager.0.private_ip} swarm join-token -q manager); fi"]
     }
     tags  {
-        Name = "${terraform.env}-${var.project}-manager-${count.index}"
-        Env  = "${terraform.env}"
-        Role = "swarm-manager"
+        Name    = "${terraform.env}-${lower(var.project)}-manager-${count.index}"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
+        Role    = "manager"
+        Index   = "${count.index}"
     }
     user_data = "${element(data.template_file.user-data-master.*.rendered, count.index)}"
     depends_on = [

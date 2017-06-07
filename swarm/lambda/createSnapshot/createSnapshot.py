@@ -9,7 +9,7 @@ ec = boto3.client('ec2')
 def lambda_handler(event, context):
     reservations = ec.describe_instances(
         Filters=[
-            { 'Name': 'tag:Role', 'Values': ['swarm-node'] },
+            { 'Name': 'tag:Role', 'Values': ['node'] },
         ]
     ).get(
         'Reservations', []

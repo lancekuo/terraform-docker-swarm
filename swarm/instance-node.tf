@@ -43,9 +43,11 @@ resource "aws_instance" "swarm-node" {
         ]
     }
     tags  {
-        Name = "${terraform.env}-${var.project}-node-${count.index}"
-        Env  = "${terraform.env}"
-        Role = "swarm-node"
+        Name    = "${terraform.env}-${lower(var.project)}-node-${count.index}"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
+        Role    = "node"
+        Index   = "${count.index}"
     }
     user_data  = "${element(data.template_file.user-data-node.*.rendered, count.index)}"
     depends_on = [
@@ -65,13 +67,13 @@ resource "aws_ebs_volume" "storage-metric" {
     availability_zone = "${element(split(",", var.availability_zones), (length(aws_instance.swarm-node.*.id)-1+var.swarm_manager_count))}"
     size              = 100
     lifecycle         = {
-        ignore_changes  = "*"
         prevent_destroy = true
     }
     tags  {
-        Name = "${terraform.env}-storage-metric"
-        Env  = "${terraform.env}"
-        Role = "storage-metric"
+        Name    = "${terraform.env}-${lower(var.project)}-storage-metric"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
+        Role    = "storage"
     }
 }
 

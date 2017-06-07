@@ -79,7 +79,8 @@ resource "aws_lambda_function" "ebs-backup-create" {
 
     environment {
         variables = {
-            Source = "Terraform"
+            Source  = "Terraform"
+            Project = "${var.project}"
         }
     }
 }
