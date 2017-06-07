@@ -150,6 +150,12 @@ resource "aws_security_group" "swarm-outgoing-service" {
         protocol    = "tcp"
         security_groups = ["${aws_security_group.grafana-elb.id}"]
     }
+    ingress {
+        from_port   = 9090
+        to_port     = 9090
+        protocol    = "tcp"
+        security_groups = ["${aws_security_group.swarm-node.id}"]
+    }
     tags {
         Name    = "${terraform.env}-swarm-outgoing-service"
         Env     = "${terraform.env}"
@@ -167,6 +173,12 @@ resource "aws_security_group" "grafana-elb" {
         to_port     = 80
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
+    }
+    egress {
+        from_port       = 0
+        to_port         = 0
+        protocol        = "-1"
+        cidr_blocks     = ["0.0.0.0/0"]
     }
     tags {
         Name    = "${terraform.env}-grafana-elb"
