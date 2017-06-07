@@ -68,7 +68,7 @@ resources.each do |key, resource|
       bastion_name = name
     end
   end
-  if ['aws_eip'].include?(resource['type'])
+  if ['aws_eip'].include?(resource['type']) && key.index('bastion')
     attributes = resource['primary']['attributes']
     eip = attributes['public_ip']
   end
