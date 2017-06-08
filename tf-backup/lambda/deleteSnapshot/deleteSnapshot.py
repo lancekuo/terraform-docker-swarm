@@ -6,7 +6,6 @@ import os
 import json
 
 iam = boto3.client('iam')
-region = "us-east-2"
 
 """
 This function looks at *all* snapshots that have a "DeleteOn" tag containing
@@ -15,7 +14,7 @@ daily.
 """
 
 def lambda_handler(event, context):
-    ec = boto3.client('ec2', region_name=region)
+    ec = boto3.client('ec2')
     account_ids = list()
     try:
         """
@@ -38,14 +37,13 @@ def lambda_handler(event, context):
     ]
     snapshot_response = ec.describe_snapshots(OwnerIds=account_ids, Filters=filters)
 
-    print "Found %d snapshots that need deleting in region %s on %s" % (
+    print "Found %d snapshots that need deleting on %s" % (
         len(snapshot_response['Snapshots']),
-        region,
         delete_on)
 
     for snap in snapshot_response['Snapshots']:
         print "Deleting snapshot %s" % snap['SnapshotId']
         ec.delete_snapshot(SnapshotId=snap['SnapshotId'])
 
-    message = "{} snapshots have been cleaned up in region {}".format(len(snapshot_response['Snapshots']), region)
+    message = "{} snapshots have been cleaned up".format(len(snapshot_response['Snapshots']))
     print message
