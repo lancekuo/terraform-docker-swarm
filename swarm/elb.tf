@@ -20,6 +20,7 @@ resource "aws_elb" "grafana" {
         interval            = 5
     }
     tags  {
-        Env = "${terraform.env}"
+        Env     = "${terraform.env}"
+        Project = "${var.project}"
     }
 }

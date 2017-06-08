@@ -3,7 +3,7 @@ data "template_file" "user-data-bastion" {
     count    = 1
 
     vars {
-        hostname = "${terraform.env}-${var.project}-bastion-${count.index}"
+        hostname = "${terraform.env}-${lower(var.project)}-bastion-${count.index}"
         domain   = "${var.domain}"
     }
 }
