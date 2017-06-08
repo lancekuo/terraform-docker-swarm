@@ -90,6 +90,13 @@ module "registry" {
     bastion_private_key_path = "${var.bastion-key["private_key_path"]}"
 }
 
+module "backup" {
+    source                   = "./tf-backup"
+
+    project                  = "${var.project}"
+    region                   = "${var.region}"
+}
+
 output "swarm-node" {
     value = "${module.swarm.swarm_node}"
 }
