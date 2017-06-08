@@ -90,7 +90,7 @@ resources.each do |key, resource|
     if !name.index('bastion')
 
       user = 'ubuntu'
-      node_path = pathname+'/keys/swarm'
+      node_path = pathname+'/keys/node'
       if name.index('manager')
         node_path = pathname+'/keys/manager'
       end

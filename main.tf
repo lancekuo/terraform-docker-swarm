@@ -26,8 +26,8 @@ variable "bastion-key" {
 }
 variable "node-key" {
     default = {
-        "public_key_path"  = "/keys/swarm.pub"
-        "private_key_path" = "/keys/swarm"
+        "public_key_path"  = "/keys/node.pub"
+        "private_key_path" = "/keys/node"
         "aws_key_name"     = "node"
     }
 }
