@@ -109,8 +109,12 @@ EOF
 
 resource "aws_s3_bucket" "registry" {
     provider = "aws.${var.region}"
-    bucket = "${terraform.env}-registry.${lower(var.project)}.internal"
+    bucket = "registry.hub.internal"
     acl    = "private"
+    lifecycle         = {
+        ignore_changes  = "*"
+        prevent_destroy = true
+    }
 
     tags {
         Name        = "Registry"
