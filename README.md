@@ -1,3 +1,1 @@
-# Terraform with VPC settings in AWS
-## TODOs
-- [ ] Add docker swarm setup
+# Terraform with Docker Swarm mode
