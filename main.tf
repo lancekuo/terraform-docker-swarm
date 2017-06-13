@@ -1,12 +1,12 @@
 module "vpc" {
-    source  = "./vpc/"
+    source  = "github.com/lancekuo/tf-vpc"
 
     project = "${var.project}"
     region  = "${var.region}"
 }
 
 module "swarm" {
-    source                   = "./swarm"
+    source                   = "github.com/lancekuo/tf-swarm"
 
     project                  = "${var.project}"
     region                   = "${var.region}"
@@ -38,7 +38,7 @@ module "swarm" {
 }
 
 module "registry" {
-    source                   = "./registry"
+    source                   = "github.com/lancekuo/tf-registry"
 
     project                  = "${var.project}"
     region                   = "${var.region}"
@@ -50,12 +50,22 @@ module "registry" {
 }
 
 module "backup" {
-    source                   = "./tf-backup"
+    source                   = "github.com/lancekuo/tf-backup"
 
     project                  = "${var.project}"
     region                   = "${var.region}"
 }
 
+module "script" {
+    source                   = "github.com/lancekuo/tf-tools"
+
+    project                  = "${var.project}"
+    region                   = "${var.region}"
+    bucket_name              = "${var.s3-bucket_name}"
+    filename                 = "${var.s3-filename}"
+    s3-region                = "${var.s3-region}"
+    node_list                = "${module.swarm.node_list_string}"
+}
 output "swarm-node" {
     value = "${module.swarm.swarm_node}"
 }
