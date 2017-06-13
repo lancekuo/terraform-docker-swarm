@@ -3,5 +3,3 @@ terraform.tfstate.d/
 *.swp
 keys/*
 !keys/.placeholder
-swarm/script/terraform.tfstate
-swarm/script/ssh_config_*
