@@ -7,13 +7,13 @@ terraform {
 }
 
 variable "s3-bucket_name" {
-    default = "terraform.internal"
+    default = "tf.docker.internal"
 }
 variable "s3-filename" {
     default = "terraform.tfstate"
 }
 variable "s3-region" {
-    default = "ca-central-1"
+    default = "us-east-2"
 }
 variable "region" {
     default = "us-east-2"
