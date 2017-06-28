@@ -1,8 +1,8 @@
 terraform {
     backend "s3" {
-        bucket = "terraform.internal"
+        bucket = "tf.docker.internal"
         key    = "terraform.tfstate"
-        region = "ca-central-1"
+        region = "us-east-2"
     }
 }
 
@@ -20,7 +20,7 @@ variable "region" {
 }
 
 variable "docker-ami" {
-    default = "ami-d63610b3"
+    default = "ami-afa98fca"
 }
 
 variable "project" {
