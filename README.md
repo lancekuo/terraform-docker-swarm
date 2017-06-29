@@ -1,4 +1,20 @@
 # Terraform with Docker Swarm mode
+## What will you get?
+| AWS    | Purpose                          |
+|--------|----------------------------------|
+| VPC    | {env} VPC                        |
+| Subnets| Private, Public and Bastion      |
+| GW     | Internet gateway, NAT gateway    |
+| EC2    | Bastion, Mamager and Node        |
+| ELB    | For Grafana:3000                 |
+| EBS    | Persist storage attached on Node |
+| S3     | Private registry run on Bastion  |
+| Route53| Point to private registry dns    |
+| CL     | Daily backup for persist storage |
+| *      | Auto generated ssh config file   |
+| Swarm  | Fully inited, ready to use!      |
+Terraform env stg
+Project wrs
 ## 0. Install awscli with profile setup
 Install awscli and configure your access key secret token into it.
 ##1. Initialize Terraform module
