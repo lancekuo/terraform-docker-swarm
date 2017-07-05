@@ -47,7 +47,7 @@ ssh-keygen -t rsa -b 4096 -f keys/bastion
 Import predefined resources
 ```language
 terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
-terraform import module.swarm.aws_ebs_volume.storage-metric
+terraform import module.swarm.aws_ebs_volume.storage-metric vol-034afe17b80deb0f7
 ```
 ##5. Apply~~
 ```language
@@ -65,5 +65,5 @@ Teardown steps
 ```language
 terraform state rm module.registry.aws_s3_bucket.registry
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
-terrafrom destroy
+terraform destroy
 ```
