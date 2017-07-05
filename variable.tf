@@ -20,7 +20,7 @@ variable "region" {
 }
 
 variable "docker-ami" {
-    default = "ami-afa98fca"
+    default = "ami-7b1b3a1e"
 }
 
 variable "project" {
