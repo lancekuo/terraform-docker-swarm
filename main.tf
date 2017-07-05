@@ -73,9 +73,27 @@ output "swarm-node" {
 output "swarm-master" {
     value = "${module.swarm.swarm_manager}"
 }
-output "access-key" {
+output "Grafana-DNS" {
+    value = "${module.swarm.elb_grafana_dns}"
+}
+output "Registry-pull-access" {
     value = "${module.registry.access}"
 }
-output "secret" {
+output "Registry-pull-secret" {
     value = "${module.registry.secret}"
+}
+output "Registry-Internal-DNS" {
+    value = "${module.registry.registry_internal_dns}"
+}
+output "Backup-Create-Script-Fileath" {
+    value = "${module.backup.lambda_backup_create_script}"
+}
+output "Backup-Delete-Script-Fileath" {
+    value = "${module.backup.lambda_backup_delete_script}"
+}
+output "Backup-Scheduler" {
+    value = "${module.backup.scheduler}"
+}
+output "SSH-Config" {
+    value = "${module.script.ssh_config}"
 }
