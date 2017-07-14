@@ -53,7 +53,7 @@ This is the primary module in this repository. It carries all docker swarm mode 
 | Node            | With swarm join ready            |
 | Security Groups | Restrict policy                  |
 | EBS             | Persist storage attached on Node |
-| ** ELB **       | ** For Grafana:3000 **           |
+| **ELB**         | **For Grafana:3000**             |
 
 There are a few parameters that you will need to know.
 0. `instance_per_subnet`, how many instance will be created in the same availability zone? Default is 2.
@@ -101,36 +101,36 @@ terraform {
 ```
 
 ### Command
-** Initialize Terraform**
+**Initialize Terraform**
  (one time job)
 ```bash
 terraform get
 terraform init
 ```
-** Generate SSH key for bastion and node instance**
+**Generate SSH key for bastion and node instance**
  (one time job)
 ```bash
 ssh-keygen -t rsa -b 4096 -f keys/node
 ssh-keygen -t rsa -b 4096 -f keys/manager
 ssh-keygen -t rsa -b 4096 -f keys/bastion
 ```
-** Import the persistent stroage**
+**Import the persistent stroage**
 ```bash
 terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
 terraform import module.swarm.aws_ebs_volume.storage-metric vol-034afe17b80deb0f7
 ```
-** Apply**
+**Apply**
 ```bash
 terraform apply
 ```
 
 ### Additional
-** Update your ssh config**
+**Update your ssh config**
 ```bash
 ruby keys/ssh_config_*.rb
 ```
 
-** Teardown the infrastructure**
+**Teardown the infrastructure**
 ```bash
 terraform state rm module.registry.aws_s3_bucket.registry
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
@@ -141,12 +141,12 @@ terraform destroy -force
 Those docker-compose file brings you the completed stack of prometheus and Grafana.
 
 ### Command
-** Build your docker image**
+**Build your docker image**
 ```bash
 cd prometheus
 docker-compose build
 ```
-** Spin up**
+**Spin up**
 ```bash
 docker stack deploy prometheus -c docker-compose.yml
 ```
