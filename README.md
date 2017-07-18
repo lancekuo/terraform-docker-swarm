@@ -85,6 +85,7 @@ This is the primary module in this repository. It carries all docker swarm mode 
 | Security Groups | Restrict policy                  |
 | EBS             | Persist storage attached on Node |
 | **ELB**         | **For Grafana:3000**             |
+| **ELB**         | **For Kibana:5601**              |
 
 There are a few parameters that you will need to know.
 0. `instance_per_subnet`, how many instance will be created in the same availability zone? Default is 2.
@@ -184,4 +185,23 @@ docker stack deploy prometheus -c docker-compose.yml
 You can find `admin` password in `docker-compose.yml` under `grafana` service.
 The best dashboard that fits to us is [Docker Swarm & Container Overview](https://grafana.com/dashboards/609). Follow the screen to setup your metric source.
 
+## ELK Stack
+Those docker-compose file brings you the completed stack of ELK 5.5.
+
+### Command
+**Build your docker image**
+```bash
+cd elk
+docker-compose build
+```
+**Spin up**
+```bash
+docker stack deploy elk -c docker-compose.yml
+```
+**Docker Logging Driver**
+```bash
+docker run \
+–log-driver gelf –log-opt gelf-address=udp://logstash:5000 \
+alpine echo hello world
+```
 ###### tags: amazons web service, aws, terraform, docker, docker swarm

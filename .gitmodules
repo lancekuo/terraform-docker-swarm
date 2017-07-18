@@ -4,3 +4,6 @@
 [submodule "prometheus"]
 	path = prometheus
 	url = https://github.com/lancekuo/prometheus
+[submodule "elk"]
+	path = elk
+	url = https://github.com/lancekuo/elk
