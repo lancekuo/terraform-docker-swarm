@@ -4,6 +4,34 @@ The repository here has three major parts.
 * Customized AMI
 * Docker swarm mode
 * Prometheus with Grafana
+```
+              ┌──────────────────────────────┐                 
+              │ Docker VPC                   │                 
+              │     ┌───────────────────┐    │                 
+              │ ┌──▶│      Manager 0    │    │                 
+              │ │   └───────────────────┘    │                 
+              │ │   ┌───────────────────┐    │                 
+ ┌───┐  ┌───┐ │ ├──▶│      Manager 1    │    │                 
+ │ R │  │ E │ │ │   └───────────────────┘    │                 
+ │ 5 │─▶│ L │─┼─┤   ┌───────────────────┐    │                 
+ │ 3 │  │ B │ │ ├──▶│       Node 0      │──┐ │                 
+ └───┘  └───┘ │ │   └───────────────────┘  │ │                 
+              │ │   ┌───────────────────┐  │ │                 
+              │ ├──▶│       Node 1      │  │ │ ┌──────────────┐
+              │ │   └───────────────────┘  └─┼▶│ EBS Metric   │
+              │ │   ┌───────────────────┐    │ └──────────────┘
+              │ └──▶│       Node 2      │    │ ┌──────────────┐
+              │     └───────────────────┘  ┌─┼▶│ S3 Registry  │
+              │     ┌───────────────────┐  │ │ └──────────────┘
+              │     │      Bastion      │──┘ │                 
+              │     └─────┬─────────────┘    │                 
+              └───────────┼──────────────────┘                 
+ ┌───┐                    │                                    
+ │ R │            .───────▼───────────.                        
+ │ 5 │──────────▶(  Private Registry   )                       
+ │ 3 │            `───────────────────'                        
+ └───┘                                                         
+```
 
 ## Customzied AMI
 It comes in git-submodule and uses [packer.io](https://www.packer.io/) to build our own base image in AWS. The base path for this submodule is under `.packer-docker`
@@ -37,10 +65,13 @@ You can change/update the environment profile by using Terraform's command.
 terraform env -help
 ```
 
-You can change project name by update `variable.tf`
+You can change `project` name and `region` by update `variable.tf`
 ```bash
 variable "project" {
     default = "WRS"
+}
+variable "region" {
+    default = "us-east-2"
 }
 ```
 #### Terraform Module [Swarm](https://github.com/lancekuo/tf-swarm)
