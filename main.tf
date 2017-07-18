@@ -67,14 +67,17 @@ module "script" {
     s3-region                = "${var.s3-region}"
     node_list                = "${module.swarm.node_list_string}"
 }
+output "Kibana-DNS" {
+    value = "${module.swarm.elb_kibana_dns}"
+}
+output "Grafana-DNS" {
+    value = "${module.swarm.elb_grafana_dns}"
+}
 output "swarm-node" {
     value = "${module.swarm.swarm_node}"
 }
 output "swarm-master" {
     value = "${module.swarm.swarm_manager}"
-}
-output "Grafana-DNS" {
-    value = "${module.swarm.elb_grafana_dns}"
 }
 output "Registry-pull-access" {
     value = "${module.registry.access}"
