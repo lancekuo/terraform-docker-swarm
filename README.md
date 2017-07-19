@@ -45,7 +45,7 @@ Take a look at `docker.json` to see detailed configuration for the customized AM
 
 ### Command
 ```bash
-git submodule init --update
+git submodule update --init
 cd .packer-docker
 packer build docker.json
 ```
@@ -200,8 +200,19 @@ docker stack deploy elk -c docker-compose.yml
 ```
 **Docker Logging Driver**
 ```bash
-docker run \
-–log-driver gelf –log-opt gelf-address=udp://logstash:5000 \
-alpine echo hello world
+docker run --rm -it \
+             --log-driver gelf \
+             --log-opt gelf-address=udp://10.3.10.69:5000 \
+             busybox echo This is my message.
 ```
-###### tags: amazons web service, aws, terraform, docker, docker swarm
+Or
+```bash
+docker service create \
+                       --name temp_service \
+                       --network elk_logging \
+                       --log-driver gelf \
+            --log-opt gelf-address=udp://10.3.10.69:5000 \
+                       alpine sleep 500000
+```
+Docker log driver document (https://docs.docker.com/engine/admin/logging/gelf/#gelf-options)
+###### tags: amazons web service, aws, terraform, docker, docker swarm, ELK
