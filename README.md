@@ -108,6 +108,13 @@ Default Route53_record for private registry is `{ENV}-registry.{PROJECT}.interna
 | S3       | Private registry run on Bastion  |
 | Route53  | Point to private registry dns    |
 
+#### Important Note
+> Add `/docker` folder under root of the bucket for registry, this is the bug of registry.
+```hcl
+Bucket: registry.hub.internal
+        /docker
+```
+
 #### Terraform Module [Backup](https://github.com/lancekuo/tf-backup)
 The module to create scheduler for backup all EBS that be mounted at `/dev/xvd*` and then create tag, `DeleteOn` with days that `retention` indicated or default 14 days.
 CloudWatch trigger will run the Lambda function every day at 13:00.
