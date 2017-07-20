@@ -86,6 +86,7 @@ This is the primary module in this repository. It carries all docker swarm mode 
 | EBS             | Persist storage attached on Node |
 | **ELB**         | **For Grafana:3000**             |
 | **ELB**         | **For Kibana:5601**              |
+| **R53**         | **For Logstash:5000/udp**        |
 
 There are a few parameters that you will need to know.
 0. `instance_per_subnet`, how many instance will be created in the same availability zone? Default is 2.

@@ -35,6 +35,8 @@ module "swarm" {
     subnet_on_public         = "${module.vpc.subnet_on_public}"
     swarm_manager_count      = "${module.vpc.swarm_manager_count}"
     swarm_node_count         = "${(module.vpc.instance_per_subnet*length(split(",", module.vpc.availability_zones))-module.vpc.swarm_manager_count)}"
+
+    internal_zone_id         = "${module.vpc.internal_zone_id}"
 }
 
 module "registry" {
@@ -48,6 +50,8 @@ module "registry" {
     bastion_public_ip        = "${module.swarm.bastion_public_ip}"
     bastion_private_ip       = "${module.swarm.bastion_private_ip}"
     bastion_private_key_path = "${var.bastion-key["private_key_path"]}"
+
+    internal_zone_id         = "${module.vpc.internal_zone_id}"
 }
 
 module "backup" {
@@ -87,6 +91,9 @@ output "Registry-pull-secret" {
 }
 output "Registry-Internal-DNS" {
     value = "${module.registry.registry_internal_dns}"
+}
+output "Logstash-Internal-DNS" {
+    value = "${module.swarm.logstash_internal_dns}"
 }
 output "Backup-Create-Script-Fileath" {
     value = "${module.backup.lambda_backup_create_script}"
