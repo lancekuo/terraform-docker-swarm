@@ -210,17 +210,17 @@ docker stack deploy elk -c docker-compose.yml
 ```bash
 docker run --rm -it \
              --log-driver gelf \
-             --log-opt gelf-address=udp://10.3.10.69:5000 \
+             --log-opt gelf-address=udp://stg-logstash.wrs.internal:5000 \
              busybox echo This is my message.
 ```
 Or
 ```bash
 docker service create \
-                       --name temp_service \
-                       --network elk_logging \
-                       --log-driver gelf \
-            --log-opt gelf-address=udp://10.3.10.69:5000 \
-                       alpine sleep 500000
+             --name temp_service \
+             --network elk_logging \
+             --log-driver gelf \
+             --log-opt gelf-address=udp://stg-logstash.wrs.internal:5000 \
+             busybox echo This is my message.
 ```
 Docker log driver document (https://docs.docker.com/engine/admin/logging/gelf/#gelf-options)
 ###### tags: amazons web service, aws, terraform, docker, docker swarm, ELK
