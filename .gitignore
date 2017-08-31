@@ -1,5 +1,6 @@
 terraform.tfstate.d/
 .terraform/modules/
+.terraform/plugins/
 *.swp
 keys/*
 !keys/.placeholder
