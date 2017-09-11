@@ -1,74 +1,76 @@
 module "vpc" {
-    source  = "github.com/lancekuo/tf-vpc"
+    source                         = "github.com/lancekuo/tf-vpc"
 
-    project = "${var.project}"
-    region  = "${var.region}"
+    project                        = "${var.project}"
+    aws_region                     = "${var.aws_region}"
+
+    count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
+    count_subnet_per_az            = "${var.count_subnet_per_az}"
 }
 
 module "swarm" {
-    source                   = "github.com/lancekuo/tf-swarm"
+    source                         = "github.com/lancekuo/tf-swarm"
 
-    project                  = "${var.project}"
-    region                   = "${var.region}"
+    project                        = "${var.project}"
+    aws_region                     = "${var.aws_region}"
 
-    ami                      = "${var.docker-ami}"
-    domain                   = "lancekuo.com"
-    vpc_default_id           = "${module.vpc.vpc_default_id}"
+    aws_ami_docker                 = "${var.aws_ami_docker}"
+    domain                         = "lancekuo.com"
+    vpc_default_id                 = "${module.vpc.vpc_default_id}"
 
-    bastion_public_key_path  = "${var.bastion-key["public_key_path"]}"
-    bastion_private_key_path = "${var.bastion-key["private_key_path"]}"
-    bastion_aws_key_name     = "${var.bastion-key["aws_key_name"]}"
-    manager_public_key_path  = "${var.manager-key["public_key_path"]}"
-    manager_private_key_path = "${var.manager-key["private_key_path"]}"
-    manager_aws_key_name     = "${var.manager-key["aws_key_name"]}"
-    node_public_key_path     = "${var.node-key["public_key_path"]}"
-    node_private_key_path    = "${var.node-key["private_key_path"]}"
-    node_aws_key_name        = "${var.node-key["aws_key_name"]}"
+    bastion_public_key_path        = "${var.rsa_key_bastion["public_key_path"]}"
+    bastion_private_key_path       = "${var.rsa_key_bastion["private_key_path"]}"
+    bastion_aws_key_name           = "${var.rsa_key_bastion["aws_key_name"]}"
+    manager_public_key_path        = "${var.rsa_key_manager["public_key_path"]}"
+    manager_private_key_path       = "${var.rsa_key_manager["private_key_path"]}"
+    manager_aws_key_name           = "${var.rsa_key_manager["aws_key_name"]}"
+    node_public_key_path           = "${var.rsa_key_node["public_key_path"]}"
+    node_private_key_path          = "${var.rsa_key_node["private_key_path"]}"
+    node_aws_key_name              = "${var.rsa_key_node["aws_key_name"]}"
 
-    subnet_public            = "${module.vpc.subnet_public}"
-    subnet_public_app        = "${module.vpc.subnet_public_app}"
-    subnet_private           = "${module.vpc.subnet_private}"
+    subnet_public_bastion_ids      = "${module.vpc.subnet_public_bastion_ids}"
+    subnet_public_app_ids          = "${module.vpc.subnet_public_app_ids}"
+    subnet_private_ids             = "${module.vpc.subnet_private_ids}"
+    availability_zones             = "${module.vpc.availability_zones}"
+    route53_internal_zone_id       = "${module.vpc.route53_internal_zone_id}"
 
-    availability_zones       = "${module.vpc.availability_zones}"
-    subnet_per_zone          = "${module.vpc.subnet_per_zone}"
-    instance_per_subnet      = "${module.vpc.instance_per_subnet}"
-    subnet_on_public         = "${module.vpc.subnet_on_public}"
-    swarm_manager_count      = "${module.vpc.swarm_manager_count}"
-    swarm_node_count         = "${(module.vpc.instance_per_subnet*length(split(",", module.vpc.availability_zones))-module.vpc.swarm_manager_count)}"
+    count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
+    count_instance_per_az          = "${var.count_instance_per_az}"
+    count_swarm_manager            = "${var.count_swarm_manager}"
+    count_swarm_node               = "${(var.count_instance_per_az*length(module.vpc.availability_zones)-var.count_swarm_manager)}"
 
-    internal_zone_id         = "${module.vpc.internal_zone_id}"
 }
 
 module "registry" {
     source                   = "github.com/lancekuo/tf-registry"
 
     project                  = "${var.project}"
-    region                   = "${var.region}"
+    region                   = "${var.aws_region}"
 
     vpc_default_id           = "${module.vpc.vpc_default_id}"
     security_group_node_id   = "${module.swarm.security_group_node_id}"
     bastion_public_ip        = "${module.swarm.bastion_public_ip}"
     bastion_private_ip       = "${module.swarm.bastion_private_ip}"
-    bastion_private_key_path = "${var.bastion-key["private_key_path"]}"
+    bastion_private_key_path = "${var.rsa_key_bastion["private_key_path"]}"
 
-    internal_zone_id         = "${module.vpc.internal_zone_id}"
+    internal_zone_id         = "${module.vpc.route53_internal_zone_id}"
 }
 
 module "backup" {
     source                   = "github.com/lancekuo/tf-backup"
 
     project                  = "${var.project}"
-    region                   = "${var.region}"
+    region                   = "${var.aws_region}"
 }
 
 module "script" {
     source                   = "github.com/lancekuo/tf-tools"
 
     project                  = "${var.project}"
-    region                   = "${var.region}"
-    bucket_name              = "${var.s3-bucket_name}"
-    filename                 = "${var.s3-filename}"
-    s3-region                = "${var.s3-region}"
+    region                   = "${var.aws_region}"
+    bucket_name              = "${var.terraform_backend_s3_bucketname}"
+    filename                 = "${var.terraform_backend_s3_filename}"
+    s3-region                = "${var.terraform_backend_s3_region}"
     node_list                = "${module.swarm.node_list_string}"
 }
 output "Kibana-DNS" {

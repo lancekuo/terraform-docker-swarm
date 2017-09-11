@@ -1,0 +1,30 @@
+terraform_backend_s3_bucketname = "tf.docker.internal"
+terraform_backend_s3_filename   = "terraform.tfstate"
+terraform_backend_s3_region     = "us-east-1"
+aws_region                      = "us-east-1"
+aws_ami_docker                  = "ami-fe465d85"
+
+project                         = "SampleProject"
+
+count_bastion_subnet_on_public  = 1
+count_swarm_manager             = 3
+count_subnet_per_az             = 2
+count_instance_per_az           = 1
+
+
+rsa_key_bastion = {
+    "public_key_path"  = "/keys/bastion.pub"
+    "private_key_path" = "/keys/bastion"
+    "aws_key_name"     = "bastion"
+}
+rsa_key_node = {
+    "public_key_path"  = "/keys/node.pub"
+    "private_key_path" = "/keys/node"
+    "aws_key_name"     = "node"
+}
+rsa_key_manager = {
+    "public_key_path"  = "/keys/manager.pub"
+    "private_key_path" = "/keys/manager"
+    "aws_key_name"     = "manager"
+}
+

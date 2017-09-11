@@ -5,47 +5,18 @@
 #        region = "us-east-2"
 #    }
 #}
+variable "terraform_backend_s3_bucketname" {}
+variable "terraform_backend_s3_filename"   {}
+variable "terraform_backend_s3_region"     {}
+variable "aws_region"                      {}
+variable "aws_ami_docker"                  {}
+variable "project"                         {}
 
-variable "s3-bucket_name" {
-    default = "tf.docker.internal"
-}
-variable "s3-filename" {
-    default = "terraform.tfstate"
-}
-variable "s3-region" {
-    default = "us-east-2"
-}
-variable "region" {
-    default = "us-east-2"
-}
+variable "rsa_key_bastion"                 {type="map"}
+variable "rsa_key_node"                    {type="map"}
+variable "rsa_key_manager"                 {type="map"}
 
-variable "docker-ami" {
-    default = "ami-7b1b3a1e"
-}
-
-variable "project" {
-    default = "WRS"
-}
-
-variable "bastion-key" {
-    default = {
-        "public_key_path"  = "/keys/bastion.pub"
-        "private_key_path" = "/keys/bastion"
-        "aws_key_name"     = "bastion"
-    }
-}
-variable "node-key" {
-    default = {
-        "public_key_path"  = "/keys/node.pub"
-        "private_key_path" = "/keys/node"
-        "aws_key_name"     = "node"
-    }
-}
-variable "manager-key" {
-    default = {
-        "public_key_path"  = "/keys/manager.pub"
-        "private_key_path" = "/keys/manager"
-        "aws_key_name"     = "manager"
-    }
-}
-
+variable "count_bastion_subnet_on_public"  {}
+variable "count_subnet_per_az"             {}
+variable "count_instance_per_az"           {}
+variable "count_swarm_manager"             {}
