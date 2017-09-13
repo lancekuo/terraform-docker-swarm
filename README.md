@@ -62,16 +62,16 @@ Also, this module would build up the infrastrucutre for the specific environment
 
 You can change/update the environment profile by using Terraform's command.
 ```bash
-terraform env -help
+terraform workspace -help
 ```
 
 You can change `project` name and `region` by update `variable.tf`
 ```bash
 variable "project" {
-    default = "WRS"
+    default = "SampleProject"
 }
 variable "region" {
-    default = "us-east-2"
+    default = "us-east-1"
 }
 ```
 #### Terraform Module [Swarm](https://github.com/lancekuo/tf-swarm)
@@ -89,9 +89,9 @@ This is the primary module in this repository. It carries all docker swarm mode 
 | **R53**         | **For Logstash:5000/udp**        |
 
 There are a few parameters that you will need to know.
-0. `instance_per_subnet`, how many instance will be created in the same availability zone? Default is 2.
-0. `swarm_manager_count`, how many `manager` will be created in total? Default is 2.
-0. `swarm_node_count`, how many `node` will be created in total? Default is `instance_per_subnet` * `len(vpc.availability_zones)` - `swarm_manager_count`
+0. `count_instance_per_az`, how many instance will be created in the same availability zone? Default is 2.
+0. `count_swarm_manager`, how many `manager` will be created in total? Default is 3 for minimal HA requirement.
+0. `count_swarm_node`, how many `node` will be created in total? Default is `count_instance_per_az` * `len(vpc.availability_zones)` - `count_swarm_manager`
 ###### Those parameters can be found in [VPC module](https://github.com/lancekuo/tf-vpc).
 
 The algorism will spread EC2 instance to all subnets that created by VPC module to make sure we use every availbility zone in specific region to have best HA.
@@ -128,14 +128,14 @@ CloudWatch trigger will run the Lambda function every day at 13:00.
 Most beautiful feature here, it generate your ssh config file from Terraform state file.
 This version comes with Bastion server settings.
 
-### Prerequisites
+### (Optional)
 > Make sure you are able to access the S3 bucket that setup in `variable.tf`
 ```hcl
 terraform {
     backend "s3" {
         bucket = "internal"
         key    = "terraform.tfstate"
-        region = "us-east-2"
+        region = "us-east-1"
     }
 }
 ```
@@ -144,24 +144,29 @@ terraform {
 **Initialize Terraform**
  (one time job)
 ```bash
-terraform get
 terraform init
+terraform get
 ```
 **Generate SSH key for bastion and node instance**
  (one time job)
 ```bash
-ssh-keygen -t rsa -b 4096 -f keys/node
-ssh-keygen -t rsa -b 4096 -f keys/manager
-ssh-keygen -t rsa -b 4096 -f keys/bastion
+ssh-keygen -q -t rsa -b 4096 -f keys/node -N ''
+ssh-keygen -q -t rsa -b 4096 -f keys/manager -N ''
+ssh-keygen -q -t rsa -b 4096 -f keys/bastion -N ''
 ```
 **Import the persistent stroage**
 ```bash
 terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
 terraform import module.swarm.aws_ebs_volume.storage-metric vol-034afe17b80deb0f7
 ```
+** Modify variable from default.tfvars.example**
+```bash
+cp default.tfvars.exmaple default.tfvars
+```
+
 **Apply**
 ```bash
-terraform apply
+terraform apply -var-file default.tfvars
 ```
 
 ### Additional
@@ -174,7 +179,7 @@ ruby keys/ssh_config_*.rb
 ```bash
 terraform state rm module.registry.aws_s3_bucket.registry
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
-terraform destroy -force
+terraform destroy -force -var-file default.tfvars
 ```
 
 ## Prometheus and Grafana
@@ -210,7 +215,7 @@ docker stack deploy elk -c docker-compose.yml
 ```bash
 docker run --rm -it \
              --log-driver gelf \
-             --log-opt gelf-address=udp://stg-logstash.wrs.internal:5000 \
+             --log-opt gelf-address=udp://stg-logstash.sampleproject.internal:5000 \
              busybox echo This is my message.
 ```
 Or
@@ -219,7 +224,7 @@ docker service create \
              --name temp_service \
              --network elk_logging \
              --log-driver gelf \
-             --log-opt gelf-address=udp://stg-logstash.wrs.internal:5000 \
+             --log-opt gelf-address=udp://stg-logstash.sampleproject.internal:5000 \
              busybox echo This is my message.
 ```
 Docker log driver document (https://docs.docker.com/engine/admin/logging/gelf/#gelf-options)
