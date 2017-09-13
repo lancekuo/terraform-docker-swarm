@@ -66,6 +66,8 @@ module "script" {
     filename                 = "${var.terraform_backend_s3_filename}"
     s3-region                = "${var.terraform_backend_s3_region}"
     node_list                = "${module.swarm.node_list_string}"
+
+    enable_s3_backend        = false
 }
 output "Kibana-DNS" {
     value = "${module.swarm.elb_kibana_dns}"
