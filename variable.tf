@@ -12,6 +12,10 @@ variable "aws_region"                      {}
 variable "aws_ami_docker"                  {}
 variable "project"                         {}
 
+variable "instance_type_bastion"           {}
+variable "instance_type_manager"           {}
+variable "instance_type_node"              {}
+
 variable "rsa_key_bastion"                 {type="map"}
 variable "rsa_key_node"                    {type="map"}
 variable "rsa_key_manager"                 {type="map"}

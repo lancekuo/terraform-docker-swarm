@@ -18,15 +18,13 @@ module "swarm" {
     domain                         = "lancekuo.com"
     vpc_default_id                 = "${module.vpc.vpc_default_id}"
 
-    bastion_public_key_path        = "${var.rsa_key_bastion["public_key_path"]}"
-    bastion_private_key_path       = "${var.rsa_key_bastion["private_key_path"]}"
-    bastion_aws_key_name           = "${var.rsa_key_bastion["aws_key_name"]}"
-    manager_public_key_path        = "${var.rsa_key_manager["public_key_path"]}"
-    manager_private_key_path       = "${var.rsa_key_manager["private_key_path"]}"
-    manager_aws_key_name           = "${var.rsa_key_manager["aws_key_name"]}"
-    node_public_key_path           = "${var.rsa_key_node["public_key_path"]}"
-    node_private_key_path          = "${var.rsa_key_node["private_key_path"]}"
-    node_aws_key_name              = "${var.rsa_key_node["aws_key_name"]}"
+    instance_type_bastion          = "${var.instance_type_bastion}"
+    instance_type_manager          = "${var.instance_type_manager}"
+    instance_type_node             = "${var.instance_type_node}"
+
+    rsa_key_bastion                = "${var.rsa_key_bastion}"
+    rsa_key_manager                = "${var.rsa_key_manager}"
+    rsa_key_node                   = "${var.rsa_key_node}"
 
     subnet_public_bastion_ids      = "${module.vpc.subnet_public_bastion_ids}"
     subnet_public_app_ids          = "${module.vpc.subnet_public_app_ids}"
@@ -45,15 +43,15 @@ module "registry" {
     source                   = "github.com/lancekuo/tf-registry"
 
     project                  = "${var.project}"
-    region                   = "${var.aws_region}"
+    aws_region               = "${var.aws_region}"
 
     vpc_default_id           = "${module.vpc.vpc_default_id}"
     security_group_node_id   = "${module.swarm.security_group_node_id}"
     bastion_public_ip        = "${module.swarm.bastion_public_ip}"
     bastion_private_ip       = "${module.swarm.bastion_private_ip}"
-    bastion_private_key_path = "${var.rsa_key_bastion["private_key_path"]}"
+    rsa_key_bastion          = "${var.rsa_key_bastion}"
 
-    internal_zone_id         = "${module.vpc.route53_internal_zone_id}"
+    route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
 }
 
 module "backup" {
@@ -72,6 +70,8 @@ module "script" {
     filename                 = "${var.terraform_backend_s3_filename}"
     s3-region                = "${var.terraform_backend_s3_region}"
     node_list                = "${module.swarm.node_list_string}"
+
+    enable_s3_backend        = false
 }
 output "Kibana-DNS" {
     value = "${module.swarm.elb_kibana_dns}"
