@@ -18,6 +18,10 @@ module "swarm" {
     domain                         = "lancekuo.com"
     vpc_default_id                 = "${module.vpc.vpc_default_id}"
 
+    instance_type_bastion          = "${var.instance_type_bastion}"
+    instance_type_manager          = "${var.instance_type_manager}"
+    instance_type_node             = "${var.instance_type_node}"
+
     rsa_key_bastion                = "${var.rsa_key_bastion}"
     rsa_key_manager                = "${var.rsa_key_manager}"
     rsa_key_node                   = "${var.rsa_key_node}"
