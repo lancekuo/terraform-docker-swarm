@@ -15,6 +15,7 @@ instance_type_bastion           = "t2.nano"
 instance_type_manager           = "t2.small"
 instance_type_node              = "t2.small"
 
+s3_bucketname_registry          = "randomly_registry"
 
 rsa_key_bastion = {
     "public_key_path"  = "/keys/bastion.pub"

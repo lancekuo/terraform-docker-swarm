@@ -52,6 +52,7 @@ module "registry" {
     rsa_key_bastion          = "${var.rsa_key_bastion}"
 
     route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
+    s3_bucketname_registry   = "${var.s3_bucketname_registry}"
 }
 
 module "backup" {

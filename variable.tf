@@ -24,3 +24,5 @@ variable "count_bastion_subnet_on_public"  {}
 variable "count_subnet_per_az"             {}
 variable "count_instance_per_az"           {}
 variable "count_swarm_manager"             {}
+
+variable "s3_bucketname_registry"          {}
