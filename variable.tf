@@ -21,7 +21,8 @@ variable "rsa_key_node"                    {type="map"}
 variable "rsa_key_manager"                 {type="map"}
 
 variable "count_bastion_subnet_on_public"  {}
-variable "count_subnet_per_az"             {}
+variable "count_public_subnet_per_az"      {}
+variable "count_private_subnet_per_az"     {}
 variable "count_instance_per_az"           {}
 variable "count_swarm_manager"             {}
 

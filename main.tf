@@ -5,7 +5,8 @@ module "vpc" {
     aws_region                     = "${var.aws_region}"
 
     count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
-    count_subnet_per_az            = "${var.count_subnet_per_az}"
+    count_public_subnet_per_az     = "${var.count_public_subnet_per_az}"
+    count_private_subnet_per_az    = "${var.count_private_subnet_per_az}"
 }
 
 module "swarm" {
