@@ -2,6 +2,7 @@ terraform_backend_s3_bucketname = "tf.docker.internal"
 terraform_backend_s3_filename   = "terraform.tfstate"
 terraform_backend_s3_region     = "us-east-1"
 aws_region                      = "us-east-1"
+aws_profile                     = "default"
 aws_ami_docker                  = "ami-fe465d85"
 
 project                         = "SampleProject"

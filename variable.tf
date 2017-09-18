@@ -9,6 +9,7 @@ variable "terraform_backend_s3_bucketname" {}
 variable "terraform_backend_s3_filename"   {}
 variable "terraform_backend_s3_region"     {}
 variable "aws_region"                      {}
+variable "aws_profile"                     {}
 variable "aws_ami_docker"                  {}
 variable "project"                         {}
 
