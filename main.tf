@@ -57,6 +57,9 @@ module "registry" {
 
     route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
     s3_bucketname_registry   = "${var.s3_bucketname_registry}"
+
+    ci_project_name          = "${var.project}"
+    ci_workspace_name        = "${terraform.workspace}"
 }
 
 module "backup" {
