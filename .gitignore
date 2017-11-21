@@ -4,4 +4,4 @@ terraform.tfstate.d/
 keys/*
 !keys/.placeholder
 *.tfvars*
-!default.tfvars.example
+!default.auto.tfvars.example
