@@ -40,6 +40,9 @@ module "swarm" {
     count_swarm_manager            = "${var.count_swarm_manager}"
     count_swarm_node               = "${(var.count_instance_per_az*length(module.vpc.availability_zones)-var.count_swarm_manager)}"
 
+    mount_point                    = "/opt/prometheus"
+    device_file                    = "/dev/xvdg"
+    partition_file                 = "/dev/xvdg1"
 }
 
 module "registry" {
@@ -57,6 +60,7 @@ module "registry" {
 
     route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
     s3_bucketname_registry   = "${var.s3_bucketname_registry}"
+    create_bucket            = false
 
     ci_project_name          = "${var.project}"
     ci_workspace_name        = "${terraform.workspace}"
