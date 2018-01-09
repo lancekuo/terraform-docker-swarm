@@ -1,4 +1,14 @@
+provider "aws" {
+    alias   = "${var.aws_profile}"
+    region  = "${var.aws_region}"
+    profile = "${var.aws_profile}"
+}
+
 module "vpc" {
+    providers = {
+        "aws" = "aws.${var.aws_profile}"
+    }
+
     source                         = "github.com/lancekuo/tf-vpc"
 
     project                        = "${var.project}"
@@ -11,6 +21,9 @@ module "vpc" {
 }
 
 module "swarm" {
+    providers = {
+        "aws" = "aws.${var.aws_profile}"
+    }
     source                         = "github.com/lancekuo/tf-swarm"
 
     project                        = "${var.project}"
@@ -38,7 +51,7 @@ module "swarm" {
     count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
     count_instance_per_az          = "${var.count_instance_per_az}"
     count_swarm_manager            = "${var.count_swarm_manager}"
-    count_swarm_node               = "${(var.count_instance_per_az*length(module.vpc.availability_zones)-var.count_swarm_manager)}"
+    count_swarm_node               = "${(var.count_instance_per_az*var.count_swarm_node)}"
 
     mount_point                    = "/opt/prometheus"
     device_file                    = "/dev/xvdg"
@@ -46,6 +59,9 @@ module "swarm" {
 }
 
 module "registry" {
+    providers = {
+        "aws" = "aws.${var.aws_profile}"
+    }
     source                   = "github.com/lancekuo/tf-registry"
 
     project                  = "${var.project}"
@@ -60,13 +76,14 @@ module "registry" {
 
     route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
     s3_bucketname_registry   = "${var.s3_bucketname_registry}"
-    create_bucket            = false
-
-    ci_project_name          = "${var.project}"
-    ci_workspace_name        = "${terraform.workspace}"
+    create_registry_bucket   = false
+    enableRegistryPush       = false
 }
 
 module "backup" {
+    providers = {
+        "aws" = "aws.${var.aws_profile}"
+    }
     source                   = "github.com/lancekuo/tf-backup"
 
     project                  = "${var.project}"

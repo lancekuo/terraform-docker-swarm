@@ -9,9 +9,10 @@ project                         = "SampleProject"
 
 count_bastion_subnet_on_public  = 1
 count_swarm_manager             = 3
+count_swarm_node                = 6
+count_instance_per_az           = 1
 count_public_subnet_per_az      = 2
 count_private_subnet_per_az     = 2
-count_instance_per_az           = 1
 
 instance_type_bastion           = "t2.nano"
 instance_type_manager           = "t2.small"

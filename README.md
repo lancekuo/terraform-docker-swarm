@@ -78,7 +78,7 @@ variable "region" {
 This is the primary module in this repository. It carries all docker swarm mode needs. Includes,
 
 | Resource        | Purpose                          |
-|-----------------|----------------------------------|
+| --------------- | -------------------------------- |
 | Bastion         | With EIP                         |
 | Manager         | With swarm init ready            |
 | Node            | With swarm join ready            |
@@ -90,8 +90,8 @@ This is the primary module in this repository. It carries all docker swarm mode 
 
 There are a few parameters that you will need to know.
 0. `count_instance_per_az`, how many instance will be created in the same availability zone? Default is 2.
-0. `count_swarm_manager`, how many `manager` will be created in total? Default is 3 for minimal HA requirement.
-0. `count_swarm_node`, how many `node` will be created in total? Default is `count_instance_per_az` * `len(vpc.availability_zones)` - `count_swarm_manager`
+1. `count_swarm_manager`, how many `manager` will be created in total? Default is 3 for minimal HA requirement.
+2. `count_swarm_node`, how many `node` will be created in total? Default is `count_instance_per_az` * 6
 ###### Those parameters can be found in [VPC module](https://github.com/lancekuo/tf-vpc).
 
 The algorism will spread EC2 instance to all subnets that created by VPC module to make sure we use every availbility zone in specific region to have best HA.
@@ -103,10 +103,10 @@ Check [here](https://github.com/lancekuo/tf-swarm/blob/master/ebs.tf) to know ho
 This module creates private registry and store images in S3 bucket and the container runs on Bastion machine.
 Default Route53_record for private registry is `{ENV}-registry.{PROJECT}.internal`.
 
-| Resource | Purpose                          |
-|----------|----------------------------------|
-| S3       | Private registry run on Bastion  |
-| Route53  | Point to private registry dns    |
+| Resource | Purpose                         |
+| -------- | ------------------------------- |
+| S3       | Private registry run on Bastion |
+| Route53  | Point to private registry dns   |
 
 #### Important Note
 > Add `/docker` folder under root of the bucket for registry, this is the bug of registry.
@@ -120,7 +120,7 @@ The module to create scheduler for backup all EBS that be mounted at `/dev/xvd*`
 CloudWatch trigger will run the Lambda function every day at 13:00.
 
 | Resource   | Purpose                              |
-|------------|--------------------------------------|
+| ---------- | ------------------------------------ |
 | CloudWatch | Scheduled backup for persist storage |
 | Lambda     | For backup and cleanup script        |
 
@@ -156,17 +156,18 @@ ssh-keygen -q -t rsa -b 4096 -f keys/bastion -N ''
 ```
 **Import the persistent stroage**
 ```bash
-terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
+#terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
 terraform import module.swarm.aws_ebs_volume.storage-metric vol-034afe17b80deb0f7
 ```
-** Modify variable from default.tfvars.example**
+**Modify variable from default.tfvars.example**
 ```bash
-cp default.tfvars.exmaple default.tfvars
+cp default.auto.tfvars.exmaple default.auto.tfvars
+# Change `s3_bucketname_registry` to your existed bucket name for private registry!
 ```
 
 **Apply**
 ```bash
-terraform apply -var-file default.tfvars
+terraform apply
 ```
 
 ### Additional
@@ -177,9 +178,9 @@ ruby keys/ssh_config_*.rb
 
 **Teardown the infrastructure**
 ```bash
-terraform state rm module.registry.aws_s3_bucket.registry
+#terraform state rm module.registry.aws_s3_bucket.registry
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
-terraform destroy -force -var-file default.tfvars
+terraform destroy
 ```
 
 ## Prometheus and Grafana

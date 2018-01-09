@@ -26,5 +26,6 @@ variable "count_public_subnet_per_az"      {}
 variable "count_private_subnet_per_az"     {}
 variable "count_instance_per_az"           {}
 variable "count_swarm_manager"             {}
+variable "count_swarm_node"                {}
 
 variable "s3_bucketname_registry"          {}
