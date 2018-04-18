@@ -199,7 +199,8 @@ You can find `admin` password in `docker-compose.yml` under `grafana` service.
 The best dashboard that fits to us is [Docker Swarm & Container Overview](https://grafana.com/dashboards/609). Follow the screen to setup your metric source.
 
 ## ELK Stack
-Those docker-compose file brings you the completed stack of ELK 5.5.
+
+Those docker-compose file brings you the completed stack of ELK 6.2.
 
 ### Command
 **Build your docker image**
@@ -228,4 +229,16 @@ docker service create \
              busybox echo This is my message.
 ```
 Docker log driver document (https://docs.docker.com/engine/admin/logging/gelf/#gelf-options)
-###### tags: amazons web service, aws, terraform, docker, docker swarm, ELK
+
+
+
+## Docker Flow Proxy Stack
+
+```bash
+cd dfproxy
+docker stack deploy app -c docker-compose.yml
+```
+
+
+
+###### tags: amazons web service, aws, terraform, docker, docker swarm, ELK, HAProxy
