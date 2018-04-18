@@ -7,3 +7,6 @@
 [submodule "elk"]
 	path = elk
 	url = https://github.com/lancekuo/elk
+[submodule "dfproxy"]
+	path = dfproxy
+	url = git@github.com:lancekuo/dfproxy.git
