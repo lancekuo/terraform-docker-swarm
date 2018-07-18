@@ -7,13 +7,23 @@ aws_ami_docker                  = "ami-fe465d85"
 project                         = "SampleProject"
 
 count_bastion_subnet_on_public  = 1
+count_public_subnet_per_az      = 1
+count_private_subnet_per_az     = 1
 count_swarm_manager             = 3
 count_subnet_per_az             = 2
 count_instance_per_az           = 1
 
+partition_file                  = "/dev/xvdg1"
+device_file                     = "/dev/xvdg"
+mount_point                     = "/opt"
+
+s3_bucketname_registry          = "hub"
+enableRegistryPush              = true
+create_registry_bucket          = true
+
 instance_type_bastion           = "t2.nano"
-instance_type_manager           = "t2.small"
-instance_type_node              = "t2.small"
+instance_type_manager           = "t2.micro"
+instance_type_node              = "t2.micro"
 
 
 rsa_key_bastion = {

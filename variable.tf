@@ -21,6 +21,16 @@ variable "rsa_key_node"                    {type="map"}
 variable "rsa_key_manager"                 {type="map"}
 
 variable "count_bastion_subnet_on_public"  {}
+variable "count_public_subnet_per_az"      {}
+variable "count_private_subnet_per_az"     {}
 variable "count_subnet_per_az"             {}
 variable "count_instance_per_az"           {}
 variable "count_swarm_manager"             {}
+
+variable "mount_point"                     {}
+variable "device_file"                     {}
+variable "partition_file"                  {}
+
+variable "create_registry_bucket"          {}
+variable "enableRegistryPush"              {}
+variable "s3_bucketname_registry"          {}

@@ -1,18 +1,20 @@
+provider "aws" {
+    region = "ca-central-1"
+}
 module "vpc" {
     source                         = "github.com/lancekuo/tf-vpc"
 
     project                        = "${var.project}"
-    aws_region                     = "${var.aws_region}"
 
     count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
-    count_subnet_per_az            = "${var.count_subnet_per_az}"
+    count_public_subnet_per_az     = "${var.count_public_subnet_per_az}"
+    count_private_subnet_per_az    = "${var.count_private_subnet_per_az}"
 }
 
 module "swarm" {
     source                         = "github.com/lancekuo/tf-swarm"
 
     project                        = "${var.project}"
-    aws_region                     = "${var.aws_region}"
 
     aws_ami_docker                 = "${var.aws_ami_docker}"
     domain                         = "lancekuo.com"
@@ -21,6 +23,10 @@ module "swarm" {
     instance_type_bastion          = "${var.instance_type_bastion}"
     instance_type_manager          = "${var.instance_type_manager}"
     instance_type_node             = "${var.instance_type_node}"
+
+    mount_point                    = "${var.mount_point}"
+    device_file                    = "${var.device_file}"
+    partition_file                 = "${var.partition_file}"
 
     rsa_key_bastion                = "${var.rsa_key_bastion}"
     rsa_key_manager                = "${var.rsa_key_manager}"
@@ -51,6 +57,10 @@ module "registry" {
     bastion_private_ip       = "${module.swarm.bastion_private_ip}"
     rsa_key_bastion          = "${var.rsa_key_bastion}"
 
+    create_registry_bucket   = "${var.create_registry_bucket}"
+    enableRegistryPush       = "${var.enableRegistryPush}"
+    s3_bucketname_registry   = "${var.s3_bucketname_registry}"
+
     route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
 }
 
@@ -58,7 +68,6 @@ module "backup" {
     source                   = "github.com/lancekuo/tf-backup"
 
     project                  = "${var.project}"
-    region                   = "${var.aws_region}"
 }
 
 module "script" {
