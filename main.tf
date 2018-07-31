@@ -15,6 +15,7 @@ module "swarm" {
     source                         = "github.com/lancekuo/tf-swarm"
 
     project                        = "${var.project}"
+    aws_region                     = "${var.aws_region}"
 
     aws_ami_docker                 = "${var.aws_ami_docker}"
     domain                         = "lancekuo.com"
