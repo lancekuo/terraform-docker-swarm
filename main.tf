@@ -1,5 +1,5 @@
 provider "aws" {
-    region = "ca-central-1"
+    region = "${var.aws_region}"
 }
 module "vpc" {
     source                         = "github.com/lancekuo/tf-vpc"

@@ -178,6 +178,7 @@ ruby keys/ssh_config_*.rb
 **Teardown the infrastructure**
 ```bash
 terraform state rm module.registry.aws_s3_bucket.registry
+terraform state rm module.registry.aws_s3_bucket_object.docker
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
 terraform destroy -force -var-file default.tfvars
 ```
