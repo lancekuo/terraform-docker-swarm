@@ -44,6 +44,7 @@ module "swarm" {
     count_swarm_manager            = "${var.count_swarm_manager}"
     count_swarm_node               = "${(var.count_instance_per_az*length(module.vpc.availability_zones)-var.count_swarm_manager)}"
 
+    depends_on                     = "${module.vpc.nat_gateway_id}"
 }
 
 module "registry" {
