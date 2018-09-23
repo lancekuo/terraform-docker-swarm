@@ -1,12 +1,12 @@
 [submodule ".packer-docker"]
 	path = .packer-docker
-	url = https://github.com/lancekuo/packer-docker.git
-[submodule "prometheus"]
-	path = prometheus
+	url = https://github.com/lancekuo/packer-docker
+[submodule "post/prometheus"]
+	path = post/prometheus
 	url = https://github.com/lancekuo/prometheus
-[submodule "elk"]
-	path = elk
+[submodule "post/elk"]
+	path = post/elk
 	url = https://github.com/lancekuo/elk
-[submodule "dfproxy"]
-	path = dfproxy
-	url = git@github.com:lancekuo/dfproxy.git
+[submodule "post/dfproxy"]
+	path = post/dfproxy
+	url = https://github.com/lancekuo/dfproxy
