@@ -28,7 +28,7 @@ resource "aws_instance" "manager" {
     vpc_security_group_ids = ["${aws_security_group.node.id}", "${aws_security_group.manager.id}", "${aws_security_group.swarm-outgoing-service.id}", "${aws_security_group.logstash.id}"]
     subnet_id              = "${element(local.subnet_private_ids, count.index)}"
     monitoring             = true
-    iam_instance_profile   = "${aws_iam_instance_profile.storage-baker.name}"
+    iam_instance_profile   = "${aws_iam_instance_profile.storage.name}"
 
     root_block_device = {
         volume_size = 10

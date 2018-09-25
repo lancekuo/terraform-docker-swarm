@@ -1,9 +1,9 @@
-resource "aws_iam_instance_profile" "storage-baker" {
-  name = "storage_baker"
-  role = "${aws_iam_role.storage-baker.name}"
+resource "aws_iam_instance_profile" "storage" {
+  name = "storage-node"
+  role = "${aws_iam_role.storage.name}"
 }
-resource "aws_iam_role" "storage-baker" {
-    name               = "storage_baker"
+resource "aws_iam_role" "storage" {
+    name               = "storage-node"
     assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -20,8 +20,8 @@ resource "aws_iam_role" "storage-baker" {
 }
 EOF
 }
-resource "aws_iam_policy" "ebs-baker" {
-    name        = "ebs_baker"
+resource "aws_iam_policy" "ebs" {
+    name        = "ebs-manage"
     description = "EBS baker for dynamicaly attach/detach into host and container"
     policy      = <<EOF
 {
@@ -59,8 +59,8 @@ resource "aws_iam_policy" "ebs-baker" {
 }
 EOF
 }
-resource "aws_iam_policy" "s3fs-baker" {
-    name        = "s3fs_baker"
+resource "aws_iam_policy" "s3fs" {
+    name        = "s3fs-manage"
     description = "S3FS baker for dynamicaly attach/detach into host and container"
     policy      = <<EOF
 {
@@ -94,10 +94,10 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ebs-baker-attach" {
-    role       = "${aws_iam_role.storage-baker.name}"
-    policy_arn = "${aws_iam_policy.ebs-baker.arn}"
+    role       = "${aws_iam_role.storage.name}"
+    policy_arn = "${aws_iam_policy.ebs.arn}"
 }
 resource "aws_iam_role_policy_attachment" "s3fs-baker-attach" {
-    role       = "${aws_iam_role.storage-baker.name}"
-    policy_arn = "${aws_iam_policy.s3fs-baker.arn}"
+    role       = "${aws_iam_role.storage.name}"
+    policy_arn = "${aws_iam_policy.s3fs.arn}"
 }

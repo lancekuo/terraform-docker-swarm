@@ -28,13 +28,10 @@ variable "count_subnet_per_az"             {}
 variable "count_instance_per_az"           {}
 variable "count_swarm_manager"             {}
 
-variable "mount_point"                     {}
-variable "device_file"                     {}
-variable "partition_file"                  {}
-
 variable "create_registry_bucket"          {}
 variable "enableRegistryPush"              {}
 variable "s3_bucketname_registry"          {}
+
 locals {
     count_swarm_node          = "${(var.count_instance_per_az*length(module.vpc.availability_zones)-var.count_swarm_manager)}"
     subnet_public_bastion_ids = "${module.vpc.subnet_public_bastion_ids}"
