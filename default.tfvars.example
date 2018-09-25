@@ -13,10 +13,6 @@ count_swarm_manager             = 3
 count_subnet_per_az             = 2
 count_instance_per_az           = 1
 
-partition_file                  = "/dev/xvdg1"
-device_file                     = "/dev/xvdg"
-mount_point                     = "/opt"
-
 s3_bucketname_registry          = "hub"
 enableRegistryPush              = true
 create_registry_bucket          = true
