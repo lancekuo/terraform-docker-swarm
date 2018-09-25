@@ -243,3 +243,6 @@ docker stack deploy app -c docker-compose.yml
 
 
 ###### tags: amazons web service, aws, terraform, docker, docker swarm, ELK, HAProxy
+
+######  Deprecated: ebs.tf, take a look [here](https://github.com/lancekuo/terraform-docker-swarm/blob/ed4d48ac2a552e8ff3baaf19d0a602154a48a76f/ebs.tf) is you need old school way to handle EBS.
+
