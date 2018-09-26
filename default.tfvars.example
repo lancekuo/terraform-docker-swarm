@@ -1,40 +1,23 @@
-terraform_backend_s3_bucketname = "tf.docker.internal"
-terraform_backend_s3_filename   = "terraform.tfstate"
-terraform_backend_s3_region     = "us-east-1"
-aws_region                      = "us-east-1"
 aws_ami_docker                  = "ami-fe465d85"
-
-project                         = "SampleProject"
+aws_region                      = "us-east-1"
+domain                          = "lancekuo.com"
+project                         = "project"
 
 count_bastion_subnet_on_public  = 1
 count_public_subnet_per_az      = 1
 count_private_subnet_per_az     = 1
+
+enableRegistryBucket            = true
+enableRegistryPush              = true
+registry_bucketname             = "hub.lancekuo.com"
+
+terraform_backend_s3_bucketname = "tf.docker.internal"
+terraform_backend_s3_filename   = "terraform.tfstate"
+terraform_backend_s3_region     = "us-east-1"
+
 count_swarm_manager             = 3
 count_subnet_per_az             = 2
 count_instance_per_az           = 1
-
-s3_bucketname_registry          = "hub"
-enableRegistryPush              = true
-create_registry_bucket          = true
-
 instance_type_bastion           = "t2.nano"
 instance_type_manager           = "t2.micro"
 instance_type_node              = "t2.micro"
-
-
-rsa_key_bastion = {
-    "public_key_path"  = "/keys/bastion.pub"
-    "private_key_path" = "/keys/bastion"
-    "aws_key_name"     = "bastion"
-}
-rsa_key_node = {
-    "public_key_path"  = "/keys/node.pub"
-    "private_key_path" = "/keys/node"
-    "aws_key_name"     = "node"
-}
-rsa_key_manager = {
-    "public_key_path"  = "/keys/manager.pub"
-    "private_key_path" = "/keys/manager"
-    "aws_key_name"     = "manager"
-}
-

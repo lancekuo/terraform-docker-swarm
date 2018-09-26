@@ -3,7 +3,6 @@ provider "aws" {
 }
 module "vpc" {
     source                         = "github.com/lancekuo/tf-vpc"
-
     project                        = "${var.project}"
 
     count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
@@ -13,34 +12,32 @@ module "vpc" {
 
 module "registry" {
     source                   = "github.com/lancekuo/tf-registry"
-
     project                  = "${var.project}"
     aws_region               = "${var.aws_region}"
 
     vpc_default_id           = "${module.vpc.vpc_default_id}"
+    route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
+
     security_group_node_id   = "${aws_security_group.node.id}"
     bastion_public_ip        = "${aws_eip.bastion.public_ip}"
     bastion_private_ip       = "${aws_eip.bastion.private_ip}"
     rsa_key_bastion          = "${var.rsa_key_bastion}"
-
-    create_registry_bucket   = "${var.create_registry_bucket}"
+    create_registry_bucket   = "${var.enableRegistryBucket}"
     enableRegistryPush       = "${var.enableRegistryPush}"
-    s3_bucketname_registry   = "${var.s3_bucketname_registry}"
+    s3_bucketname_registry   = "${var.registry_bucketname}"
 
-    route53_internal_zone_id = "${module.vpc.route53_internal_zone_id}"
 }
 
 module "backup" {
     source                   = "github.com/lancekuo/tf-backup"
-
     project                  = "${var.project}"
 }
 
 module "script" {
     source                   = "github.com/lancekuo/tf-tools"
-
     project                  = "${var.project}"
     region                   = "${var.aws_region}"
+
     bucket_name              = "${var.terraform_backend_s3_bucketname}"
     filename                 = "${var.terraform_backend_s3_filename}"
     s3-region                = "${var.terraform_backend_s3_region}"
