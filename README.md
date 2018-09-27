@@ -33,7 +33,10 @@ The repository here has three major parts.
  └───┘                                                         
 ```
 
+
+
 ## Customzied AMI
+
 It comes in git-submodule and uses [packer.io](https://www.packer.io/) to build our own base image in AWS. The base path for this submodule is under `.packer-docker`
 
 Take a look at `docker.json` to see detailed configuration for the customized AMI. Briefly it takes ubnunt 16.10, docker ce_17.06, docker-machine, docker-compose and AWS CLI installed.
@@ -53,8 +56,8 @@ packer build docker.json
 ###### Note 1: For building your own AMI, you need to update three parameters. `region`, `security_group_ids`, `subnet_id`.
 ###### Note 2: Update README.md and commit into repository when you produce a new AMI.
 
-
 ## Docker Swarm Mode
+
 It spins up whole infrastructure for docker swarm in AWS.
 #### Terraform Module [VPC](https://github.com/lancekuo/tf-vpc)
 This module build up the fundamental of infrastructure including `VPC`, `Subnet`, `Gateway` and `Route table`.
@@ -74,7 +77,8 @@ variable "region" {
     default = "us-east-1"
 }
 ```
-#### Terraform Module [Swarm](https://github.com/lancekuo/tf-swarm)
+#### Terraform - Swarm
+
 This is the primary module in this repository. It carries all docker swarm mode needs. Includes,
 
 | Resource        | Purpose                          |
@@ -96,7 +100,9 @@ There are a few parameters that you will need to know.
 
 The algorism will spread EC2 instance to all subnets that created by VPC module to make sure we use every availbility zone in specific region to have best HA.
 
-Check [here](https://github.com/lancekuo/tf-swarm/blob/master/ebs.tf) to know how to fdisk and mount to EC2 instance in first time.
+##### IAM - Storage node
+
+Able to create
 
 
 #### Terraform Module [Registry](https://github.com/lancekuo/tf-registry)
@@ -199,7 +205,7 @@ docker stack deploy prometheus -c docker-compose.yml
 You can find `admin` password in `docker-compose.yml` under `grafana` service.
 The best dashboard that fits to us is [Docker Swarm & Container Overview](https://grafana.com/dashboards/609). Follow the screen to setup your metric source.
 
-## ELK Stack
+## Docker Stack for Logging
 
 Those docker-compose file brings you the completed stack of ELK 6.2.
 
@@ -233,12 +239,58 @@ Docker log driver document (https://docs.docker.com/engine/admin/logging/gelf/#g
 
 
 
-## Docker Flow Proxy Stack
+## Docker Stack for Docker Flow Proxy
 
 ```bash
 cd dfproxy
 docker stack deploy app -c docker-compose.yml
 ```
+
+
+
+## Docker Stack for Dynamic Storage
+
+The specified docker volume is necessary here if the service/stack requires persistent storage.
+
+Here is the example,
+
+```yaml
+version: "3.5"
+volumes:
+    data-rexray-ebs:
+        name: 'rexray_ebs_{{.Service.Name}}-{{.Task.Slot}}'
+        driver: rexray/ebs
+        driver_opts:
+            size: 29
+            snapshotID: ""
+            volumeType: "gp2"    #io1 needs to come with iops
+            iops: 0              #default 100 in gp2
+            availabilityZone: "" #No quick solution for changing azs in docker compose
+            encrypted: "false"
+            encryptionKey: "test"
+            force: "false"
+            fsType: "ext4"
+
+    data-rexray-s3fs:
+        name: 'rexray_s3fs_{{.Service.Name}}-{{.Task.Slot}}'
+        driver: rexray/s3fs
+services:
+    sameple:
+        image: "busybox"
+        command: "tail -f /dev/null"
+        volumes:
+           - data-rexray-ebs:/data
+        deploy:
+            placement:
+                constraints:
+                    - node.labels.azs == 0
+```
+
+### Known issues
+
+1. There is no easy way to get all availability zone for user to pick up and use it in their docker-compose file
+2. In the practice, every deployment command should run in `bastion` machine and it is located in `{regionName}-{index}a`, so we can append `- node.labels.azs == 0` in services section
+3. Don't know what to set in configuration file? Take a look at [here](https://github.com/rexray/rexray/issues/733)
 
 
 
