@@ -53,6 +53,21 @@ resource "aws_instance" "node" {
             "docker plugin install rexray/s3fs S3FS_REGION=${var.aws_region} S3FS_ENDPOINT=http://s3-${var.aws_region}.amazonaws.com S3FS_OPTIONS=iam_role=auto,url=http://s3-${var.aws_region}.amazonaws.com,curldbg --grant-all-permissions"
         ]
     }
+    provisioner "remote-exec" {
+        inline = [
+            "docker node update --label-add azs=${count.index} ${self.tags.Name}",
+        ]
+        connection {
+            bastion_host        = "${aws_eip.bastion.public_ip}"
+            bastion_user        = "ubuntu"
+            bastion_private_key = "${file("${path.root}${var.rsa_key_bastion["private_key_path"]}")}"
+
+            type                = "ssh"
+            user                = "ubuntu"
+            host                = "${aws_instance.manager.0.private_ip}"
+            private_key         = "${file("${path.root}${var.rsa_key_manager["private_key_path"]}")}"
+        }
+    }
 # drain and remove the node on destroy
     provisioner "remote-exec" {
         when = "destroy"
