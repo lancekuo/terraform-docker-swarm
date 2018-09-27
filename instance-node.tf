@@ -116,12 +116,12 @@ resource "aws_instance" "node" {
         }
     }
     tags  {
-        Name        = "${element(data.template_file.hostname-node.*.rendered, count.index)}"
         Environment = "${terraform.workspace}"
-        Project     = "${var.project}"
-        Role        = "node"
         Index       = "${count.index}"
+        Name        = "${element(data.template_file.hostname-node.*.rendered, count.index)}"
+        Project     = "${var.project}"
         Retention   = 365
+        Role        = "node"
     }
     user_data  = "${element(data.template_file.user-data-node.*.rendered, count.index)}"
 }

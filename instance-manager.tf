@@ -88,12 +88,12 @@ resource "aws_instance" "manager" {
     }
 
     tags  {
-        Name        = "${element(data.template_file.hostname-manager.*.rendered, count.index)}"
         Environment = "${terraform.workspace}"
-        Project     = "${var.project}"
-        Role        = "manager"
         Index       = "${count.index}"
+        Name        = "${element(data.template_file.hostname-manager.*.rendered, count.index)}"
+        Project     = "${var.project}"
         Retention   = 365
+        Role        = "manager"
     }
     user_data = "${element(data.template_file.user-data-master.*.rendered, count.index)}"
     depends_on = ["module.vpc"]
