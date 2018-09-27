@@ -13,12 +13,14 @@ resource "aws_security_group" "manager" {
         from_port       = 2376
         to_port         = 2376
         protocol        = "tcp"
+        description     = "Docker API SSL"
         security_groups = ["${aws_security_group.bastion.id}"]
     }
     ingress {
         from_port       = 2375
         to_port         = 2375
         protocol        = "tcp"
+        description     = "Docker API"
         security_groups = ["${aws_security_group.bastion.id}"]
     }
     tags {
@@ -35,6 +37,7 @@ resource "aws_security_group" "node" {
         from_port       = 4789
         to_port         = 4789
         protocol        = "tcp"
+        description     = "Swarm internal networking/gossip"
         self            = true
     }
 
@@ -42,6 +45,7 @@ resource "aws_security_group" "node" {
         from_port       = 4789
         to_port         = 4789
         protocol        = "udp"
+        description     = "Swarm internal networking/gossip"
         self            = true
     }
 
@@ -49,6 +53,7 @@ resource "aws_security_group" "node" {
         from_port       = 7946
         to_port         = 7946
         protocol        = "tcp"
+        description     = "Swarm internal networking/gossip"
         self            = true
     }
 
@@ -56,6 +61,7 @@ resource "aws_security_group" "node" {
         from_port       = 7946
         to_port         = 7946
         protocol        = "udp"
+        description     = "Swarm internal networking/gossip"
         self            = true
     }
 
@@ -63,6 +69,7 @@ resource "aws_security_group" "node" {
         from_port       = 2377
         to_port         = 2377
         protocol        = "tcp"
+        description     = "Swarm API"
         self            = true
     }
 
@@ -70,6 +77,7 @@ resource "aws_security_group" "node" {
         from_port       = 2376
         to_port         = 2376
         protocol        = "tcp"
+        description     = "Docker API SSL"
         security_groups = ["${aws_security_group.bastion.id}"]
     }
 
@@ -77,13 +85,8 @@ resource "aws_security_group" "node" {
         from_port       = 2375
         to_port         = 2375
         protocol        = "tcp"
+        description     = "Docker API"
         self            = true
-    }
-
-    ingress {
-        from_port       = 2375
-        to_port         = 2375
-        protocol        = "tcp"
         security_groups = ["${aws_security_group.bastion.id}"]
     }
 
@@ -139,18 +142,21 @@ resource "aws_security_group" "swarm-outgoing-service" {
         from_port   = 3000
         to_port     = 3000
         protocol    = "tcp"
+        description = "Grafana"
         security_groups = ["${aws_security_group.grafana-elb.id}"]
     }
     ingress {
         from_port   = 5601
         to_port     = 5601
         protocol    = "tcp"
+        description = "Kibana"
         security_groups = ["${aws_security_group.kibana-elb.id}"]
     }
     ingress {
         from_port   = 9090
         to_port     = 9090
         protocol    = "tcp"
+        description = "Prometheus"
         security_groups = ["${aws_security_group.node.id}"]
     }
     tags {
@@ -167,6 +173,7 @@ resource "aws_security_group" "private_registry" {
         from_port   = 80
         to_port     = 80
         protocol    = "tcp"
+        description = "Registry"
         security_groups = ["${aws_security_group.node.id}", "${aws_security_group.manager.id}"]
     }
 
@@ -191,12 +198,14 @@ resource "aws_security_group" "logstash" {
         from_port   = 5000
         to_port     = 5000
         protocol    = "udp"
+        description = "Logstash"
         security_groups = ["${aws_security_group.node.id}"]
     }
     ingress {
         from_port   = 9600
         to_port     = 9600
         protocol    = "tcp"
+        description = "Logstash API"
         security_groups = ["${aws_security_group.node.id}"]
     }
     tags {
