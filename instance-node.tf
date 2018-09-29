@@ -55,7 +55,7 @@ resource "aws_instance" "node" {
     }
     provisioner "remote-exec" {
         inline = [
-            "docker node update --label-add azs=${count.index} ${self.tags.Name}",
+            "docker node update --label-add azs=${count.index%length(module.vpc.availability_zones)} ${self.tags.Name}",
         ]
         connection {
             bastion_host        = "${aws_eip.bastion.public_ip}"

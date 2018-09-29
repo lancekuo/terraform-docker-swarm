@@ -51,7 +51,7 @@ resource "aws_instance" "manager" {
             " if [ ${count.index} -eq 0 ]; then sudo docker swarm init; else sudo docker swarm join ${aws_instance.manager.0.private_ip}:2377 --token $(docker -H ${aws_instance.manager.0.private_ip} swarm join-token -q manager); fi",
             " if [ ${count.index} -eq 1 ]; then git clone https://github.com/lancekuo/dfproxy.git;git clone https://github.com/lancekuo/prometheus.git; fi",
             " if [ ${count.index} -eq 2 ]; then git clone https://github.com/lancekuo/elk.git; fi",
-            "docker node update --label-add azs=${count.index} ${self.tags.Name}",
+            "docker node update --label-add azs=${count.index%length(module.vpc.availability_zones)} ${self.tags.Name}",
             "docker plugin install rexray/ebs --grant-all-permissions",
             "docker plugin install rexray/s3fs S3FS_REGION=${var.aws_region} S3FS_ENDPOINT=http://s3-${var.aws_region}.amazonaws.com S3FS_OPTIONS=iam_role=auto,url=http://s3-${var.aws_region}.amazonaws.com,curldbg --grant-all-permissions"
         ]
