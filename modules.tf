@@ -4,6 +4,7 @@ provider "aws" {
 module "vpc" {
     source                         = "github.com/lancekuo/tf-vpc"
     project                        = "${var.project}"
+    aws_region                     = "${var.aws_region}"
 
     count_bastion_subnet_on_public = "${var.count_bastion_subnet_on_public}"
     count_public_subnet_per_az     = "${var.count_public_subnet_per_az}"
@@ -92,6 +93,9 @@ output "elb_grafana_dns" {
 output "elb_kibana_dns" {
     value = "${aws_elb.kibana.dns_name}"
 }
-output "logstash_internal_dns" {
-    value = "${aws_route53_record.logstash.fqdn}"
+output "manager_internal_dns" {
+    value = "${aws_route53_record.manager.fqdn}"
+}
+output "worker_internal_dns" {
+    value = "${aws_route53_record.worker.fqdn}"
 }
