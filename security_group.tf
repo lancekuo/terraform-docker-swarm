@@ -34,6 +34,14 @@ resource "aws_security_group" "node" {
     vpc_id      = "${local.vpc_default_id}"
 
     ingress {
+        from_port       = 9323
+        to_port         = 9323
+        protocol        = "tcp"
+        description     = "Docker Metrics"
+        self            = true
+    }
+
+    ingress {
         from_port       = 4789
         to_port         = 4789
         protocol        = "tcp"
