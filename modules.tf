@@ -36,14 +36,13 @@ module "backup" {
 module "script" {
     source                   = "github.com/lancekuo/tf-tools"
     project                  = "${var.project}"
-    region                   = "${var.aws_region}"
 
-    bucket_name              = "${var.terraform_backend_s3_bucketname}"
-    filename                 = "${var.terraform_backend_s3_filename}"
-    s3-region                = "${var.terraform_backend_s3_region}"
+    s3_bucket_name           = "${var.terraform_backend_s3_bucketname}"
+    s3_tf_filename           = "${var.terraform_backend_s3_filename}"
+    s3_region                = "${var.terraform_backend_s3_region}"
+    enableS3Backend          = false
+
     node_list                = "${join(",",aws_instance.node.*.id)}"
-
-    enable_s3_backend        = false
 }
 output "Registry-pull-access" {
     value = "${module.registry.access}"
