@@ -22,11 +22,10 @@ module "registry" {
     security_group_node_id   = "${aws_security_group.node.id}"
     bastion_public_ip        = "${aws_eip.bastion.public_ip}"
     bastion_private_ip       = "${aws_eip.bastion.private_ip}"
-    rsa_key_bastion          = "${var.rsa_key_bastion}"
-    create_registry_bucket   = "${var.enableRegistryBucket}"
+    bastion_rsa_key          = "${var.rsa_key_bastion}"
+    enableRegistryBucket     = "${var.enableRegistryBucket}"
     enableRegistryPush       = "${var.enableRegistryPush}"
-    s3_bucketname_registry   = "${var.registry_bucketname}"
-
+    registry_bucketname      = "${var.registry_bucketname}"
 }
 
 module "backup" {
