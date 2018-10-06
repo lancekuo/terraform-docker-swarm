@@ -123,5 +123,12 @@ resource "aws_instance" "node" {
         Retention   = 365
         Role        = "node"
     }
+
+    volume_tags  {
+        Environment = "${terraform.workspace}"
+        Index       = "${count.index}"
+        Name        = "${element(data.template_file.hostname-manager.*.rendered, count.index)}"
+        Project     = "${var.project}"
+    }
     user_data  = "${element(data.template_file.user-data-node.*.rendered, count.index)}"
 }

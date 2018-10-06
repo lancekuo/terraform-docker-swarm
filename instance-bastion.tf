@@ -27,6 +27,13 @@ resource "aws_instance" "bastion" {
         Role        = "bastion"
         Index       = "${count.index}"
     }
+
+    volume_tags  {
+        Environment = "${terraform.workspace}"
+        Index       = "${count.index}"
+        Name        = "${element(data.template_file.hostname-manager.*.rendered, count.index)}"
+        Project     = "${var.project}"
+    }
     user_data  = "${element(data.template_file.user-data-bastion.*.rendered, count.index)}"
 }
 resource "aws_eip" "bastion" {
