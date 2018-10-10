@@ -21,6 +21,9 @@ variable "enableRegistryBucket"            {}
 variable "enableRegistryPush"              {}
 variable "registry_bucketname"             {}
 
+# module backup
+variable "event_schedule"                  {}
+
 # module script
 variable "terraform_backend_s3_bucketname" {}
 variable "terraform_backend_s3_filename"   {}

@@ -11,6 +11,8 @@ enableRegistryBucket            = true
 enableRegistryPush              = true
 registry_bucketname             = "hub.lancekuo.com"
 
+event_schedule                  = "cron(0 8 * * ? *)"
+
 terraform_backend_s3_bucketname = "tf.docker.internal"
 terraform_backend_s3_filename   = "terraform.tfstate"
 terraform_backend_s3_region     = "us-east-1"

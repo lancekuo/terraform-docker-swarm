@@ -31,6 +31,9 @@ module "registry" {
 module "backup" {
     source                   = "github.com/lancekuo/tf-backup"
     project                  = "${var.project}"
+    aws_region               = "${var.aws_region}"
+
+    event_schedule           = "${var.event_schedule}"
 }
 
 module "script" {
