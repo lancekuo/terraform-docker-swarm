@@ -1,9 +1,13 @@
-This document describes how to build a Docker swarm mode with monitoring setup in a AWS VPC using Terraform.
+This document describes how to build a Docker swarm  with monitoring setup in a AWS VPC using Terraform.
 
 The repository here has three major parts.
 * Customized AMI
 * Docker swarm mode
 * Prometheus with Grafana
+* Examples
+  * Logging
+  * Reverse proxy
+  * Dynamic storage
 ```
               ┌──────────────────────────────┐                 
               │ Docker VPC                   │                 
@@ -39,12 +43,13 @@ The repository here has three major parts.
 
 It comes in git-submodule and uses [packer.io](https://www.packer.io/) to build our own base image in AWS. The base path for this submodule is under `.packer-docker`
 
-Take a look at `docker.json` to see detailed configuration for the customized AMI. Briefly it takes ubnunt 16.10, docker ce_17.06, docker-machine, docker-compose and AWS CLI installed.
+Take a look at `docker.json` to see detailed configuration for the customized AMI. Briefly it takes ubnunt 18.04, docker ce_18.06, docker-compose, cloud-init for attached Ebs and AWS CLI installed.
 
-`docker.options` enables `experimental=true` and `insecure-registry` to `10.0.0.0/8`， `192.0.0.0/8` and `172.0.0.0/8` for testing purpose.
+`docker.options` enables `metrics`, `experimental=true` and `insecure-registry` to `10.0.0.0/8`， `192.0.0.0/8` and `172.0.0.0/8` for testing purpose.
 
 ### Prerequisites
-> Install awscli in your local machine and configure your access key secret token.
+
+> Install awscli in your host machine and configure your access key secret token.
 
 ### Command
 ```bash
@@ -88,24 +93,30 @@ This is the primary module in this repository. It carries all docker swarm mode 
 | Node            | With swarm join ready            |
 | Security Groups | Restrict policy                  |
 | EBS             | Persist storage attached on Node |
+| IAM             | IAM Role for Instance Profile    |
 | **ELB**         | **For Grafana:3000**             |
 | **ELB**         | **For Kibana:5601**              |
 | **R53**         | **For Logstash:5000/udp**        |
 
 There are a few parameters that you will need to know.
-0. `count_instance_per_az`, how many instance will be created in the same availability zone? Default is 2.
-0. `count_swarm_manager`, how many `manager` will be created in total? Default is 3 for minimal HA requirement.
-0. `count_swarm_node`, how many `node` will be created in total? Default is `count_instance_per_az` * `len(vpc.availability_zones)` - `count_swarm_manager`
+1. `count_instance_per_az`, how many instance will be created in the same availability zone? Default is 2.
+1. `count_swarm_manager`, how many `manager` will be created in total? Default is 3 for minimal HA requirement.
+1. `count_swarm_node`, how many `node` will be created in total? Default is `count_instance_per_az` * `len(vpc.availability_zones)` - `count_swarm_manager`
 ###### Those parameters can be found in [VPC module](https://github.com/lancekuo/tf-vpc).
 
-The algorism will spread EC2 instance to all subnets that created by VPC module to make sure we use every availbility zone in specific region to have best HA.
+The simple algorithm will spread EC2 instance to all subnets that created by VPC module as much as possible to make sure we use every availbility zone in specific region to have best high availability.
 
-##### IAM - Storage node
+##### IAM and Instance Profile
 
-Able to create
+This will create a Instance Profile under `storage-node` IAM Role. This profile will be attached to each one of managers and workers node.
 
+The `storage-node` comes with two major permissions,
+
+- Ebs management
+- S3 management
 
 #### Terraform Module [Registry](https://github.com/lancekuo/tf-registry)
+
 This module creates private registry and store images in S3 bucket and the container runs on Bastion machine.
 Default Route53_record for private registry is `{ENV}-registry.{PROJECT}.internal`.
 
@@ -116,14 +127,18 @@ Default Route53_record for private registry is `{ENV}-registry.{PROJECT}.interna
 
 #### Important Note
 > Add `/docker` folder under root of the bucket for registry, this is the bug of registry.
+>
+> This was added into terraform script, the script would create bucket and folder at the same time once enabled.
 ```hcl
 Bucket: registry.hub.internal
         /docker
 ```
 
 #### Terraform Module [Backup](https://github.com/lancekuo/tf-backup)
-The module to create scheduler for backup all EBS that be mounted at `/dev/xvd*` and then create tag, `DeleteOn` with days that `retention` indicated or default 14 days.
-CloudWatch trigger will run the Lambda function every day at 13:00.
+The module to create scheduler for backup all EBS that be mounted at `/dev/xvd*` and then create tag, `DeleteOn` with the days that tag , `retention` indicated or default 14 days.
+CloudWatch trigger will run the Lambda function every day at 08:00 UTC.
+
+Lambda script was wrote in Go for myself practice.
 
 | Resource   | Purpose                              |
 |------------|--------------------------------------|
@@ -131,11 +146,11 @@ CloudWatch trigger will run the Lambda function every day at 13:00.
 | Lambda     | For backup and cleanup script        |
 
 #### Terraform Module [Script](https://github.com/lancekuo/tf-tools)
-Most beautiful feature here, it generate your ssh config file from Terraform state file.
+Most beautiful feature, it generate your ssh config file from Terraform state file.
 This version comes with Bastion server settings.
 
 ### (Optional)
-> Make sure you are able to access the S3 bucket that setup in `variable.tf`
+> Make sure you are able to access the S3 bucket that setup in `variable.tf` if you're using terraform backend feature for storing state file.
 ```hcl
 terraform {
     backend "s3" {
@@ -147,6 +162,7 @@ terraform {
 ```
 
 ### Command
+
 **Initialize Terraform**
  (one time job)
 ```bash
@@ -161,22 +177,26 @@ ssh-keygen -q -t rsa -b 4096 -f keys/manager -N ''
 ssh-keygen -q -t rsa -b 4096 -f keys/bastion -N ''
 ```
 **Import the persistent stroage**
+
 ```bash
 terraform import module.registry.aws_s3_bucket.registry registry.hub.internal
 terraform import module.swarm.aws_ebs_volume.storage-metric vol-034afe17b80deb0f7
 ```
-** Modify variable from default.tfvars.example**
+**Modify variable from default.tfvars.example**
+
 ```bash
-cp default.tfvars.exmaple default.tfvars
+cp default.tfvars.exmaple default.auto.tfvars
 ```
 
 **Apply**
+
 ```bash
-terraform apply -var-file default.tfvars
+terraform apply
 ```
 
 ### Additional
 **Update your ssh config**
+
 ```bash
 ruby keys/ssh_config_*.rb
 ```
@@ -186,7 +206,7 @@ ruby keys/ssh_config_*.rb
 terraform state rm module.registry.aws_s3_bucket.registry
 terraform state rm module.registry.aws_s3_bucket_object.docker
 terraform state rm module.swarm.aws_ebs_volume.storage-metric
-terraform destroy -force -var-file default.tfvars
+terraform destroy -force
 ```
 
 ## Prometheus and Grafana
